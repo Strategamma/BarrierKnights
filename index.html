@@ -1,0 +1,683 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Latest working</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: undefined; }
+.select-value-color-pink { background-color: rgba(225, 136, 179, 0.27); }
+.select-value-color-purple { background-color: rgba(168, 129, 197, 0.27); }
+.select-value-color-green { background-color: rgba(123, 183, 129, 0.27); }
+.select-value-color-gray { background-color: rgba(84, 72, 49, 0.15); }
+.select-value-color-translucentGray { background-color: undefined; }
+.select-value-color-orange { background-color: rgba(224, 124, 57, 0.27); }
+.select-value-color-brown { background-color: rgba(210, 162, 141, 0.35); }
+.select-value-color-red { background-color: rgba(244, 171, 159, 0.4); }
+.select-value-color-yellow { background-color: rgba(236, 191, 66, 0.39); }
+.select-value-color-blue { background-color: rgba(93, 165, 206, 0.27); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="20cf9346-4f86-80c2-bbfc-cdd09c54d3aa" class="page sans"><header><h1 class="page-title">Latest working</h1><p class="page-description"></p></header><div class="page-body"><p id="20df9346-4f86-8023-8310-f46cfd2a4109" class="">&lt;!DOCTYPE html&gt;<br/>&lt;html lang=&quot;en&quot;&gt;<br/>&lt;head&gt;<br/>&lt;meta charset=&quot;UTF-8&quot;&gt;<br/>&lt;title&gt;Barrier Knights&lt;/title&gt;<br/>&lt;meta name=&quot;viewport&quot; content=&quot;width=700, initial-scale=1&quot;&gt;<br/>&lt;link href=&quot;<br/><a href="https://fonts.googleapis.com/css?family=Quicksand:700,500%7CNunito:600">https://fonts.googleapis.com/css?family=Quicksand:700,500|Nunito:600</a>&quot; rel=&quot;stylesheet&quot;&gt;<br/>&lt;style&gt;<br/>/* ... [KEEP ALL YOUR CSS AS-IS] ... */<br/>body {<br/>background: #1b2654;<br/>margin: 0;<br/>font-family: &#x27;Quicksand&#x27;, &#x27;Nunito&#x27;, Arial, sans-serif;<br/>color: #fff;<br/>min-height: 100vh;<br/>}<br/>.bk-banner {<br/>display: flex; align-items: center; justify-content: space-between;<br/>padding: 18px 32px 8px 32px;<br/>background: linear-gradient(90deg, #27437a 60%, #5faaff 100%);<br/>font-family: &#x27;Quicksand&#x27;, &#x27;Nunito&#x27;, Arial, sans-serif;<br/>border-radius: 0 0 16px 16px;<br/>box-shadow: 0 4px 24px #0003;<br/>margin-bottom: 14px;<br/>letter-spacing: 2px;<br/>font-size: 2.2rem;<br/>}<br/>.bk-title { font-size: 2.1rem; color: #fff; font-weight: 700; letter-spacing: 2px; }<br/></p><p id="20df9346-4f86-802e-b16f-fa7b67842e23" class="">.bk-statbar {<br/>display: flex; align-items: flex-start; justify-content: space-between; gap: 22px;<br/>background: rgba(40,50,90,0.92); box-shadow: 0 2px 18px #0003; border-radius: 22px;<br/>padding: 11px 18px; max-width: 930px; margin: 0 auto 13px auto;<br/>}<br/>.bk-player-panel {<br/>flex: 1 1 0; display: flex; align-items: center; gap: 10px; min-width: 110px;<br/>background: transparent;<br/>border-radius: 17px;<br/>transition: background 0.18s;<br/>padding: 3px 5px;<br/>}<br/>.bk-player-panel.bk-active-panel {<br/>background: #233165;<br/>box-shadow: 0 0 0 2px #3c66f577;<br/>}<br/>.bk-white { color: #fff; }<br/>.bk-gold  { color: #ffe066; }<br/>.bk-avatar {<br/>width: 48px; height: 48px; font-size: 2rem; font-weight: 800; border-radius: 50%;<br/>display: flex; align-items: center; justify-content: center;<br/>box-shadow: 0 0 0 4px #3c66f5, 0 2px 10px #0005; background: #fff;<br/>color: #293c6a; margin-right: 7px; transition: box-shadow 0.22s;<br/>}<br/>.bk-gold-avatar { background: #ffe066; color: #6b5a00; box-shadow: 0 0 0 4px #ffe06688, 0 2px 10px #0005; }<br/>.bk-avatar.bk-active, .bk-gold-avatar.bk-active {<br/>box-shadow: 0 0 0 9px #ffe066bb, 0 2px 26px #ffe06680, 0 0 25px #ffe06655;<br/>outline: 4px solid #ffe066;<br/>outline-offset: 3px;<br/>z-index: 1;<br/>transition: box-shadow 0.18s, outline 0.18s;<br/>}<br/>.bk-avatar.bk-active {<br/>box-shadow: 0 0 0 9px #7ac2ffbb, 0 2px 26px #7ac2ff80, 0 0 25px #fff4;<br/>outline: 4px solid #5faaff;<br/>outline-offset: 3px;<br/>transition: box-shadow 0.18s, outline 0.18s;<br/>}<br/>.bk-player-details { display: flex; flex-direction: column; gap: 4px; }<br/>.bk-player-name { font-size: 1.02rem; font-weight: 700; display: flex; align-items: center; gap: 7px;}<br/>.bk-edit-btn { border: none; background: none; font-size: 1rem; cursor: pointer; color: #7ad7ff; padding: 0; }<br/>.bk-chips { display: flex; align-items: center; gap: 7px; margin-top: 0;}<br/>.bk-chip { border-radius: 9px; background: #2f395e; color: #cde5ff; font-size: .94rem; font-weight: 500; padding: 3px 10px; display: flex; align-items: center;}<br/>.bk-walls  { background: #232c46; color: #ffe066;}<br/>.bk-cards  { background: #314d6b; color: #53a2ff;}<br/>.bk-currentcard { background: #222; color: #fff; min-width: 38px; justify-content: center; }<br/>.bk-scorecenter { flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;<br/>font-size: 1rem; font-weight: 700; letter-spacing: 1.1px;}<br/>.bk-score-white { color: #7ac2ff; } .bk-score-mid { color: #eee; font-size:0.98em;} .bk-score-gold { color: #ffe066;}<br/>.bk-controls-row { display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 12px 0; }<br/>.bk-btn {<br/>border: 1.3px solid #3c466f22; border-radius: 13px; font-size: 1.12rem; font-weight: 700; padding: 9px 23px;<br/>box-shadow: 0 2px 10px #18357c13; cursor: pointer; background: #222d44; color: #fff;<br/>transition: background 0.13s, color 0.13s, box-shadow 0.14s, border 0.16s;<br/>outline: none;<br/>}<br/>.bk-modal-content .bk-btn {<br/>border: 1.8px solid #7ac2ff88 !important;<br/>background: #25305a;<br/>box-shadow: 0 3px 10px #1116;<br/>}<br/>.bk-btn.active, .bk-btn:focus { outline: 2px solid #79d2ff;}<br/>.bk-move.active { background: #ffe066; color: #222; border-color: #ffe06688;}<br/>.bk-wall.active { background: #7ac2ff; color: #222; border-color: #7ac2ff;}<br/>.bk-btn:disabled { background: #31394e; color: #a5b1d9; cursor: not-allowed;}<br/>.bk-btn:not(:disabled):hover {<br/>background: #407bfa; color: #fff;<br/>box-shadow: 0 6px 22px #5faaff33;<br/>border-color: #7ac2ff;<br/>}<br/>.bk-board-area-flex {<br/>display: flex;<br/>align-items: flex-start;<br/>justify-content: center;<br/>gap: 22px;<br/>max-width: 1250px;<br/>margin: 0 auto 30px auto;<br/>min-height: 560px;<br/>}<br/>.bk-board-container {<br/>display: flex; justify-content: center; align-items: center;<br/>background: #232c46; border-radius: 19px; box-shadow: 0 4px 32px #12214025;<br/>width: 504px; height: 504px; min-width: 300px; min-height: 300px;<br/>position: relative;<br/>}<br/>#bk-board { border-radius: 13px; box-shadow: 0 4px 22px #12214015; background: #1b2654; display: block;}<br/>.bk-movehistory-panel {<br/>position: sticky;<br/>top: 90px;<br/>align-self: flex-start;<br/>background: rgba(36,41,65,0.94);<br/>border-radius: 16px;<br/>box-shadow: 0 2px 18px #0005;<br/>padding: 13px 19px;<br/>width: 200px;<br/>min-height: 150px;<br/>max-height: 504px;<br/>height: 504px;<br/>overflow-y: auto;<br/>margin-left: 0;<br/>}<br/>.bk-movehistory-panel h3 { margin: 0 0 10px 0; font-size: 1.13rem; color: #7ac2ff;}<br/>.bk-moveentry {<br/>display: grid;<br/>grid-template-columns: 1fr 1.2fr 1fr 1.2fr;<br/>align-items: center;<br/>gap: 0.4em;<br/>font-size: .97rem;<br/>margin-bottom: 4px;<br/>white-space: nowrap;<br/>}<br/>.bk-movewho { font-weight: 700;}<br/>.bk-movecoords { font-family: monospace; margin-left: 2px;}<br/>.bk-snackbar { position: fixed; left: 50%; bottom: 38px; transform: translateX(-50%); background: #232c46; color: #ffe066; border-radius: 11px; padding: 11px 24px; font-size: 1.1rem; font-weight: 700; box-shadow: 0 6px 18px #222d; opacity: 0; pointer-events: none; z-index: 999; transition: opacity 0.18s;}<br/>.bk-snackbar.show { opacity: 1; }<br/>.bk-modal { position: fixed; z-index: 99; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(10,22,50,0.32); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.22s;}<br/>@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }<br/>.bk-modal-content { background: #222e48; color: #fff; border-radius: 19px; box-shadow: 0 8px 64px #0004; padding: 33px 29px; min-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 17px;}<br/>.bk-names-input { display: flex; gap: 18px; margin: 12px 0 4px 0;}<br/>.bk-names-input label { font-size: 1.09rem; display: flex; flex-direction: column; gap: 5px;}<br/>.bk-names-input input { padding: 8px 14px; font-size: 1.04rem; border-radius: 9px; border: 1.5px solid #5387e5; background: #172146; color: #fff; margin-top: 3px;}<br/>.bk-modal-content button { margin-top: 10px; width: 140px; }<br/>@media (max-width: 1100px) {<br/>.bk-board-area-flex {<br/>flex-direction: column;<br/>gap: 8px;<br/>align-items: center;<br/>}<br/>.bk-movehistory-panel {<br/>position: static;<br/>width: 97vw;<br/>max-width: 420px;<br/>min-height: 110px;<br/>max-height: 180px;<br/>height: auto;<br/>margin: 14px 0 0 0;<br/>align-self: unset;<br/>}<br/>.bk-board-container {<br/>width: 92vw;<br/>height: 92vw;<br/>max-width: 97vw;<br/>max-height: 97vw;<br/>min-width: 270px;<br/>min-height: 270px;<br/>}<br/>#bk-board { width: 100%; height: 100%; }<br/>}<br/>@media (max-width: 700px) {<br/>.bk-statbar, .bk-board-area-flex { max-width: 100vw; }<br/>.bk-statbar { flex-direction: column; gap: 8px; padding: 8px;}<br/>.bk-scorecenter { order: 1; margin: 7px 0 2px 0;}<br/>.bk-player-panel { order: 2; min-width: 0;}<br/>.bk-controls-row { flex-direction: column; gap: 10px;}<br/>}<br/>&lt;/style&gt;<br/>&lt;/head&gt;<br/>&lt;body&gt;<br/>&lt;div class=&quot;bk-banner&quot;&gt;<br/>&lt;span class=&quot;bk-title&quot;&gt;Barrier Knights&lt;/span&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-statbar&quot;&gt;<br/>&lt;div class=&quot;bk-player-panel&quot; id=&quot;bk-panel-w&quot;&gt;<br/>&lt;div class=&quot;bk-avatar&quot; id=&quot;bk-avatar-w&quot;&gt;W&lt;/div&gt;<br/>&lt;div class=&quot;bk-player-details&quot;&gt;<br/>&lt;div class=&quot;bk-player-name bk-white&quot;&gt;<br/>&lt;span id=&quot;bk-player1-name&quot;&gt;White&lt;/span&gt;<br/>&lt;button class=&quot;bk-edit-btn&quot; onclick=&quot;editName(0)&quot; title=&quot;Edit Name&quot;&gt;✏️&lt;/button&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-chips&quot;&gt;<br/>&lt;span class=&quot;bk-chip bk-walls&quot; id=&quot;bk-walls-w&quot;&gt;🧱10&lt;/span&gt;<br/>&lt;span class=&quot;bk-chip bk-cards&quot; id=&quot;bk-cards-w&quot;&gt;Cards: 0&lt;/span&gt;<br/>&lt;span class=&quot;bk-chip bk-currentcard&quot; id=&quot;bk-card-w&quot;&gt;No card&lt;/span&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-scorecenter&quot;&gt;<br/>&lt;span class=&quot;bk-score-white&quot; id=&quot;bk-score-w&quot;&gt;White: 0&lt;/span&gt;<br/>&lt;span class=&quot;bk-score-mid&quot;&gt;SCORE&lt;/span&gt;<br/>&lt;span class=&quot;bk-score-gold&quot; id=&quot;bk-score-g&quot;&gt;Gold: 0&lt;/span&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-player-panel&quot; id=&quot;bk-panel-g&quot;&gt;<br/>&lt;div class=&quot;bk-avatar bk-gold-avatar&quot; id=&quot;bk-avatar-g&quot;&gt;B&lt;/div&gt;<br/>&lt;div class=&quot;bk-player-details&quot;&gt;<br/>&lt;div class=&quot;bk-player-name bk-gold&quot;&gt;<br/>&lt;span id=&quot;bk-player2-name&quot;&gt;Gold&lt;/span&gt;<br/>&lt;button class=&quot;bk-edit-btn&quot; onclick=&quot;editName(1)&quot; title=&quot;Edit Name&quot;&gt;✏️&lt;/button&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-chips&quot;&gt;<br/>&lt;span class=&quot;bk-chip bk-walls&quot; id=&quot;bk-walls-g&quot;&gt;🧱10&lt;/span&gt;<br/>&lt;span class=&quot;bk-chip bk-cards&quot; id=&quot;bk-cards-g&quot;&gt;Cards: 0&lt;/span&gt;<br/>&lt;span class=&quot;bk-chip bk-currentcard&quot; id=&quot;bk-card-g&quot;&gt;No card&lt;/span&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-controls-row&quot;&gt;<br/>&lt;button class=&quot;bk-btn bk-move&quot; id=&quot;bk-btn-move&quot; onclick=&quot;selectMoveMode()&quot;&gt;Move&lt;/button&gt;<br/>&lt;button class=&quot;bk-btn bk-wall&quot; id=&quot;bk-btn-wall&quot; onclick=&quot;selectWallMode()&quot;&gt;Wall&lt;/button&gt;<br/>&lt;button class=&quot;bk-btn bk-undo&quot; id=&quot;bk-btn-undo&quot; onclick=&quot;undoLastAction()&quot;&gt;Undo&lt;/button&gt;<br/>&lt;button class=&quot;bk-btn bk-card&quot; id=&quot;bk-btn-card&quot; onclick=&quot;drawCard()&quot; disabled&gt;Pick Card&lt;/button&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-board-area-flex&quot;&gt;<br/>&lt;div class=&quot;bk-board-container&quot;&gt;<br/>&lt;canvas id=&quot;bk-board&quot; width=&quot;504&quot; height=&quot;504&quot;&gt;&lt;/canvas&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-movehistory-panel&quot;&gt;&lt;h3&gt;Move History&lt;/h3&gt;&lt;div id=&quot;bk-movehistory-list&quot;&gt;&lt;/div&gt;&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;!-- Startup Modal --&gt;<br/>&lt;div class=&quot;bk-modal&quot; id=&quot;bk-modal-start&quot; style=&quot;display:flex;&quot;&gt;<br/>&lt;div class=&quot;bk-modal-content&quot;&gt;<br/>&lt;h2&gt;Enter Player Names&lt;/h2&gt;<br/>&lt;div class=&quot;bk-names-input&quot;&gt;<br/>&lt;label&gt;Player 1 (White): &lt;input id=&quot;bk-name-w&quot; maxlength=&quot;12&quot; placeholder=&quot;White&quot; autocomplete=&quot;off&quot; /&gt;&lt;/label&gt;<br/>&lt;label&gt;Player 2 (Gold): &lt;input id=&quot;bk-name-g&quot; maxlength=&quot;12&quot; placeholder=&quot;Gold&quot; autocomplete=&quot;off&quot; /&gt;&lt;/label&gt;<br/>&lt;/div&gt;<br/>&lt;button class=&quot;bk-btn&quot; onclick=&quot;submitNames()&quot;&gt;Continue&lt;/button&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;!-- Coin Toss Modal --&gt;<br/>&lt;div class=&quot;bk-modal&quot; id=&quot;bk-modal-toss&quot; style=&quot;display:none;&quot;&gt;<br/>&lt;div class=&quot;bk-modal-content&quot; style=&quot;align-items:center;&quot;&gt;<br/>&lt;h2&gt;Coin Toss&lt;/h2&gt;<br/>&lt;div style=&quot;font-size:2.2rem;margin:16px 0;&quot;&gt;<br/>&lt;span id=&quot;bk-cointoss-coin&quot; style=&quot;display:inline-block;transition:transform 0.8s;&quot;&gt;🪙&lt;/span&gt;<br/>&lt;/div&gt;<br/>&lt;div id=&quot;bk-cointoss-desc&quot; style=&quot;font-size:1.12rem;&quot;&gt;Flipping...&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;!-- New Game Modal --&gt;<br/>&lt;div class=&quot;bk-modal&quot; id=&quot;bk-modal-newgame&quot; style=&quot;display:none;&quot;&gt;<br/>&lt;div class=&quot;bk-modal-content&quot;&gt;<br/>&lt;h2 id=&quot;bk-winner-text&quot;&gt;Player Wins!&lt;/h2&gt;<br/>&lt;button class=&quot;bk-btn&quot; onclick=&quot;startNewGame();document.getElementById(&#x27;bk-modal-newgame&#x27;).style.display=&#x27;none&#x27;&quot;&gt;Start New Game&lt;/button&gt;<br/>&lt;/div&gt;<br/>&lt;/div&gt;<br/>&lt;div class=&quot;bk-snackbar&quot; id=&quot;bk-snackbar&quot;&gt;&lt;/div&gt;<br/>&lt;script&gt;<br/>// --- GAME STATE ---<br/>let BK = {<br/>players: [<br/>{ name: &quot;White&quot;, short: &quot;W&quot;, color: &quot;#fff&quot;, wallColor: &quot;#fff&quot;, score: 0, walls: 10, cards: 0, card: &quot;No card&quot; },<br/>{ name: &quot;Gold&quot;,  short: &quot;B&quot;, color: &quot;#ffe066&quot;, wallColor: &quot;#ffe066&quot;, score: 0, walls: 10, cards: 0, card: &quot;No card&quot; }<br/>],<br/>turn: 0,<br/>winner: null,<br/>pawnPositions: [null, null],<br/>boardReady: false,<br/>phase: &quot;names&quot;,<br/>walls: [],<br/>moveHistory: [],<br/>undoStack: [],<br/>currentCards: [&quot;No card&quot;,&quot;No card&quot;],<br/>cardsDrawn: [0,0]<br/>};<br/>let mode = &quot;move&quot;;<br/>let ghostWall = null;<br/>const canvas = document.getElementById(&#x27;bk-board&#x27;);<br/>const ctx = canvas.getContext(&#x27;2d&#x27;);<br/>const grid = 9;<br/>const cell = canvas.width / grid;<br/></p><p id="20df9346-4f86-8053-b3ff-cf15c39c8a51" class="">// --- PERFORMANCE: EVENT HANDLER CLEANUP ---<br/>function clearCanvasHandlers() {<br/>canvas.onclick = null;<br/>canvas.onmousemove = null;<br/>canvas.onmouseleave = null;<br/>}<br/></p><p id="20df9346-4f86-80ec-a8c5-d7327f0768ea" class="">// --- UI ENTRY ---<br/>function submitNames() {<br/>BK.players[0].name = document.getElementById(&#x27;bk-name-w&#x27;).value.trim() || &quot;White&quot;;<br/>BK.players[1].name = document.getElementById(&#x27;bk-name-g&#x27;).value.trim() || &quot;Gold&quot;;<br/>document.getElementById(&#x27;bk-player1-name&#x27;).innerText = BK.players[0].name;<br/>document.getElementById(&#x27;bk-player2-name&#x27;).innerText = BK.players[1].name;<br/>document.getElementById(&#x27;bk-modal-start&#x27;).style.display = &quot;none&quot;;<br/>startCoinToss();<br/>}<br/>function editName(idx) {<br/>const n = prompt(&quot;Enter new name for &quot; + BK.players[idx].name + &quot;:&quot;, BK.players[idx].name);<br/>if (n) {<br/>BK.players[idx].name = n.slice(0,12);<br/>document.getElementById(idx===0?&#x27;bk-player1-name&#x27;:&#x27;bk-player2-name&#x27;).innerText = BK.players[idx].name;<br/>drawBoard();<br/>}<br/>}<br/>function startCoinToss() {<br/>showModal(&#x27;bk-modal-toss&#x27;);<br/>const coin = document.getElementById(&#x27;bk-cointoss-coin&#x27;);<br/>const desc = document.getElementById(&#x27;bk-cointoss-desc&#x27;);<br/>coin.innerText = Math.random() &gt; 0.5 ? &#x27;⚪&#x27; : &#x27;🟡&#x27;;<br/>desc.innerText = &quot;Flipping...&quot;;<br/>setTimeout(() =&gt; {<br/>BK.turn = Math.random() &lt; 0.5 ? 0 : 1;<br/>coin.innerText = BK.turn === 0 ? &#x27;⚪&#x27; : &#x27;🟡&#x27;;<br/>coin.style.transform = &#x27;rotateY(1440deg)&#x27;;<br/>setTimeout(() =&gt; {<br/>coin.style.transform = &#x27;rotateY(0deg)&#x27;;<br/>desc.innerHTML = <br/><code>&lt;b&gt;${BK.players[BK.turn].name}&lt;/b&gt; wins the toss and starts first.</code>;<br/>setTimeout(() =&gt; {<br/>document.getElementById(&#x27;bk-modal-toss&#x27;).style.display = &quot;none&quot;;<br/>startPawnPlacement();<br/>}, 1200);<br/>}, 800);<br/>}, 1000);<br/>}<br/>function showModal(id) {<br/>document.querySelectorAll(&#x27;.bk-modal&#x27;).forEach(m =&gt; m.style.display = &quot;none&quot;);<br/>document.getElementById(id).style.display = &quot;flex&quot;;<br/>}<br/></p><p id="20df9346-4f86-80fc-8a47-f5f449df7e3c" class="">// --- PAWN PLACEMENT ---<br/>function startPawnPlacement() {<br/>BK.phase = &quot;placement&quot;;<br/>BK.pawnPositions = [null, null];<br/>drawBoard();<br/>pawnPlaceStep(BK.turn, () =&gt; {<br/>pawnPlaceStep(1 - BK.turn, () =&gt; {<br/>BK.phase = &quot;play&quot;;<br/>BK.boardReady = true;<br/>drawBoard();<br/>updateStatBar();<br/>updateMoveControls();<br/>selectMoveMode();<br/>});<br/>});<br/>}<br/>function pawnPlaceStep(idx, callback) {<br/>showSnackbar(<br/><code>${BK.players[idx].name}, place your pawn!</code>);<br/>highlightRow(idx===0?0:8, idx);<br/>clearCanvasHandlers();<br/>canvas.onclick = function(e) {<br/>const {x,y} = mouseToCell(e);<br/>if ((idx===0 &amp;&amp; y===0)||(idx===1 &amp;&amp; y===8)) {<br/>BK.pawnPositions[idx] = {x, y};<br/>drawBoard();<br/>clearCanvasHandlers();<br/>callback();<br/>}<br/>}<br/>}<br/>function highlightRow(row, idx) {<br/>drawBoard();<br/>for (let x = 0; x &lt; 9; ++x) {<br/>ctx.save();<br/>ctx.lineWidth = 4;<br/>ctx.strokeStyle = idx===0?&#x27;#7ac2ff&#x27;:&#x27;#ffe066&#x27;;<br/>ctx.shadowColor = ctx.strokeStyle+&quot;88&quot;;<br/>ctx.shadowBlur = 9;<br/>ctx.strokeRect(x<br/><em>cell+3, row</em>cell+3, cell-6, cell-6);<br/>ctx.restore();<br/>}<br/>}<br/></p><p id="20df9346-4f86-8046-ba2f-cbbe254c54c9" class="">// --- MOVE &amp; WALL MODES ---<br/>function selectMoveMode() {<br/>if (!BK.boardReady || BK.phase !== &quot;play&quot;) return;<br/>mode = &quot;move&quot;;<br/>document.getElementById(&#x27;bk-btn-move&#x27;).classList.add(&#x27;active&#x27;);<br/>document.getElementById(&#x27;bk-btn-wall&#x27;).classList.remove(&#x27;active&#x27;);<br/>drawBoard();<br/>highlightValidMoves();<br/>setMoveHandler();<br/>}<br/>function selectWallMode() {<br/>if (!BK.boardReady || BK.phase !== &quot;play&quot; || BK.players[BK.turn].walls &lt;= 0) return;<br/>mode = &quot;wall&quot;;<br/>document.getElementById(&#x27;bk-btn-wall&#x27;).classList.add(&#x27;active&#x27;);<br/>document.getElementById(&#x27;bk-btn-move&#x27;).classList.remove(&#x27;active&#x27;);<br/>drawBoard();<br/>setWallHandler();<br/>}<br/>function setMoveHandler() {<br/>clearCanvasHandlers();<br/>canvas.onclick = function(e) {<br/>if (BK.phase !== &quot;play&quot; || mode !== &quot;move&quot;) return;<br/>const idx = BK.turn, pos = BK.pawnPositions[idx];<br/>const {x,y} = mouseToCell(e);<br/>if (!isValidMove(pos, {x, y})) return;<br/>pushUndo();<br/>BK.pawnPositions[idx] = {x, y};<br/>BK.moveHistory.push({ player: idx, action: &#x27;move&#x27;, to: {x, y} });<br/>if ((idx===0&amp;&amp;y===8)||(idx===1&amp;&amp;y===0)) {<br/>BK.players[idx].score++;<br/>BK.winner = idx;<br/>document.getElementById(&#x27;bk-winner-text&#x27;).innerText = BK.players[idx].name + &quot; wins!&quot;;<br/>document.getElementById(&#x27;bk-modal-newgame&#x27;).style.display = &quot;flex&quot;;<br/>updateStatBar(); updateMoveControls(); updateHistory(); drawBoard();<br/>clearCanvasHandlers();<br/>return;<br/>}<br/>BK.turn = 1-BK.turn;<br/>updateStatBar();<br/>updateMoveControls();<br/>updateHistory();<br/>drawBoard();<br/>highlightValidMoves();<br/>setMoveHandler();<br/>}<br/>}<br/>function highlightValidMoves() {<br/>if (BK.phase !== &quot;play&quot;) return;<br/>const idx = BK.turn;<br/>const pos = BK.pawnPositions[idx];<br/>const moves = getValidMoves(idx);<br/>for (let move of moves) {<br/>ctx.save();<br/>ctx.lineWidth = 5;<br/>ctx.strokeStyle = idx===0 ? &quot;#7ac2ff&quot; : &quot;#ffe066&quot;;<br/>ctx.shadowColor = idx===0 ? &quot;#7ac2ff&quot; : &quot;#ffe066&quot;;<br/>ctx.shadowBlur = 14;<br/>ctx.strokeRect(move.x<br/><em>cell+5, move.y</em>cell+5, cell-10, cell-10);<br/>ctx.restore();<br/>}<br/>}<br/>function getValidMoves(idx) {<br/>const pos = BK.pawnPositions[idx];<br/>if (!pos) return [];<br/>const deltas = [[0,-1],[0,1],[-1,0],[1,0]];<br/>let moves = [];<br/>for (let [dx, dy] of deltas) {<br/>let nx = pos.x + dx, ny = pos.y + dy;<br/>if (nx &gt;= 0 &amp;&amp; nx &lt; 9 &amp;&amp; ny &gt;= 0 &amp;&amp; ny &lt; 9 &amp;&amp; !blockedByWall(pos, {x: nx, y: ny}))<br/>moves.push({ x: nx, y: ny });<br/>}<br/>return moves;<br/>}<br/>function isValidMove(from, to) {<br/>if (!from) return false;<br/>const dx = Math.abs(from.x - to.x), dy = Math.abs(from.y - to.y);<br/>if (dx+dy!==1) return false;<br/>if (to.x&lt;0||to.x&gt;8||to.y&lt;0||to.y&gt;8) return false;<br/>if (blockedByWall(from, to)) return false;<br/>return true;<br/>}<br/></p><p id="20df9346-4f86-8017-b390-c22d88518555" class="">// --- WALL PLACEMENT ---<br/>function setWallHandler() {<br/>clearCanvasHandlers();<br/>if (BK.players[BK.turn].walls &lt;= 0) {<br/>updateMoveControls();<br/>return;<br/>}<br/>canvas.onmousemove = function(e) {<br/>if (BK.phase !== &quot;play&quot; || mode !== &quot;wall&quot; || BK.players[BK.turn].walls &lt;= 0) return;<br/>const {x, y} = mouseToCell(e);<br/>const mx = (e.offsetX / cell) - Math.floor(e.offsetX / cell);<br/>const my = (e.offsetY / cell) - Math.floor(e.offsetY / cell);<br/>ghostWall = null;<br/>if (mx &gt; my &amp;&amp; x &lt; 8 &amp;&amp; y &lt; 8) ghostWall = {x, y, dir: &#x27;v&#x27;, owner: BK.turn};<br/>else if (my &gt;= mx &amp;&amp; x &lt; 8 &amp;&amp; y &lt; 8) ghostWall = {x, y, dir: &#x27;h&#x27;, owner: BK.turn};<br/>drawBoard();<br/>if (ghostWall) drawGhostWall(ghostWall);<br/>};<br/>canvas.onmouseleave = function() { ghostWall = null; drawBoard(); };<br/>canvas.onclick = function(e) {<br/>if (BK.phase !== &quot;play&quot; || mode !== &quot;wall&quot; || !ghostWall) return;<br/>if (BK.players[BK.turn].walls &lt;= 0) {<br/>showSnackbar(&quot;You have no walls left!&quot;);<br/>updateMoveControls();<br/>return;<br/>}<br/>if (!canPlaceWall(ghostWall)) {<br/>showSnackbar(&quot;Illegal wall placement.&quot;);<br/>return;<br/>}<br/>pushUndo();<br/>BK.walls.push({...ghostWall});<br/>BK.players[BK.turn].walls--;<br/>BK.moveHistory.push({ player: BK.turn, action: &#x27;wall&#x27;, wall: {...ghostWall} });<br/>BK.turn = 1 - BK.turn;<br/>updateStatBar();<br/>updateMoveControls();<br/>updateHistory();<br/>ghostWall = null;<br/>drawBoard();<br/>setWallHandler();<br/>}<br/>}<br/>function drawGhostWall(wall) {<br/>ctx.save();<br/>ctx.globalAlpha = 0.99;<br/>ctx.strokeStyle = wall.owner === 0 ? &quot;#7ac2ff&quot; : &quot;#ffe066&quot;;<br/>ctx.lineWidth = 13;<br/>ctx.lineCap = &quot;round&quot;;<br/>if (wall.dir === &quot;h&quot;) {<br/>ctx.beginPath();<br/>ctx.moveTo(wall.x<br/><em>cell+cell</em>0.08, (wall.y+1)*cell);<br/>ctx.lineTo((wall.x+2)<br/><em>cell-cell</em>0.08, (wall.y+1)<em>cell);<br/>ctx.stroke();<br/>} else {<br/>ctx.beginPath();<br/>ctx.moveTo((wall.x+1)cell, wall.ycell+cell<br/></em>0.08);<br/>ctx.lineTo((wall.x+1)*cell, (wall.y+2)<br/><em>cell-cell</em>0.08);<br/>ctx.stroke();<br/>}<br/>ctx.restore();<br/>}<br/>function canPlaceWall(wall) {<br/>if (wall.dir===&#x27;h&#x27; &amp;&amp; (wall.x&lt;0||wall.x&gt;7||wall.y&lt;0||wall.y&gt;7)) return false;<br/>if (wall.dir===&#x27;v&#x27; &amp;&amp; (wall.x&lt;0||wall.x&gt;7||wall.y&lt;0||wall.y&gt;7)) return false;<br/>for (const w of BK.walls) {<br/>if (w.dir===wall.dir&amp;&amp;w.x===wall.x&amp;&amp;w.y===wall.y) return false;<br/>if (wall.dir===&#x27;h&#x27;&amp;&amp;w.dir===&#x27;h&#x27;&amp;&amp;w.y===wall.y&amp;&amp;Math.abs(w.x-wall.x)===1) return false;<br/>if (wall.dir===&#x27;v&#x27;&amp;&amp;w.dir===&#x27;v&#x27;&amp;&amp;w.x===wall.x&amp;&amp;Math.abs(w.y-wall.y)===1) return false;<br/>if (wall.dir!==w.dir&amp;&amp;wall.x===w.x&amp;&amp;wall.y===w.y) return false;<br/>}<br/>BK.walls.push(wall);<br/>let pass = hasPath(0)&amp;&amp;hasPath(1);<br/>BK.walls.pop();<br/>return pass;<br/>}<br/>function hasPath(idx) {<br/>const start = BK.pawnPositions[idx];<br/>if (!start) return false;<br/>const targetRow = idx===0?8:0;<br/>const visited = Array.from({length:9},()=&gt;Array(9).fill(false));<br/>const queue=[start];<br/>while(queue.length) {<br/>const {x,y}=queue.shift();<br/>if (visited[x][y]) continue;<br/>visited[x][y]=true;<br/>if (y===targetRow) return true;<br/>[[0,1],[0,-1],[1,0],[-1,0]].forEach(([dx,dy])=&gt;{<br/>const nx=x+dx, ny=y+dy;<br/>if(nx&gt;=0&amp;&amp;nx&lt;9&amp;&amp;ny&gt;=0&amp;&amp;ny&lt;9&amp;&amp;!visited[nx][ny]&amp;&amp;!blockedByWall({x,y},{x:nx,y:ny})) {<br/>queue.push({x:nx,y:ny});<br/>}<br/>});<br/>}<br/>return false;<br/>}<br/>function blockedByWall(from, to) {<br/>for (const wall of BK.walls) {<br/>if (wall.dir===&#x27;h&#x27;) {<br/>if ((from.y===wall.y&amp;&amp;to.y===wall.y+1||from.y===wall.y+1&amp;&amp;to.y===wall.y)&amp;&amp;<br/>((from.x===wall.x)||(from.x===wall.x+1))&amp;&amp;from.x===to.x) return true;<br/>}<br/>if (wall.dir===&#x27;v&#x27;) {<br/>if ((from.x===wall.x&amp;&amp;to.x===wall.x+1||from.x===wall.x+1&amp;&amp;to.x===wall.x)&amp;&amp;<br/>((from.y===wall.y)||(from.y===wall.y+1))&amp;&amp;from.y===to.y) return true;<br/>}<br/>}<br/>return false;<br/>}<br/>function mouseToCell(e) {<br/>const rect = canvas.getBoundingClientRect();<br/>const mx = e.clientX-rect.left, my = e.clientY-rect.top;<br/>return {x:Math.floor(mx/cell),y:Math.floor(my/cell)};<br/>}<br/></p><p id="20df9346-4f86-8022-940f-e27e84d6d78f" class="">// --- UNDO STACK: EFFICIENT, LIMITED ---<br/>function getGameSnapshot() {<br/>return {<br/>players: JSON.parse(JSON.stringify(BK.players)),<br/>turn: BK.turn,<br/>pawnPositions: JSON.parse(JSON.stringify(BK.pawnPositions)),<br/>boardReady: BK.boardReady,<br/>phase: BK.phase,<br/>walls: JSON.parse(JSON.stringify(BK.walls)),<br/>moveHistory: JSON.parse(JSON.stringify(BK.moveHistory)),<br/>currentCards: JSON.parse(JSON.stringify(BK.currentCards)),<br/>cardsDrawn: JSON.parse(JSON.stringify(BK.cardsDrawn))<br/>};<br/>}<br/>function restoreGameSnapshot(state) {<br/>BK.players = JSON.parse(JSON.stringify(state.players));<br/>BK.turn = state.turn;<br/>BK.pawnPositions = JSON.parse(JSON.stringify(state.pawnPositions));<br/>BK.boardReady = state.boardReady;<br/>BK.phase = state.phase;<br/>BK.walls = JSON.parse(JSON.stringify(state.walls));<br/>BK.moveHistory = JSON.parse(JSON.stringify(state.moveHistory));<br/>BK.currentCards = JSON.parse(JSON.stringify(state.currentCards));<br/>BK.cardsDrawn = JSON.parse(JSON.stringify(state.cardsDrawn));<br/>}<br/>function pushUndo() {<br/>if (BK.undoStack.length &gt; 80) BK.undoStack.shift();<br/>BK.undoStack.push(getGameSnapshot());<br/>updateMoveControls();<br/>}<br/>function undoLastAction() {<br/>if (BK.undoStack.length === 0) return;<br/>const prev = BK.undoStack.pop();<br/>if (prev) {<br/>restoreGameSnapshot(prev);<br/>drawBoard();<br/>updateStatBar();<br/>updateMoveControls();<br/>updateHistory();<br/>if (mode === &#x27;move&#x27;) setMoveHandler();<br/>if (mode === &#x27;wall&#x27;) setWallHandler();<br/>}<br/>}<br/></p><p id="20df9346-4f86-8003-8838-c62111caa78d" class="">// --- BOARD DRAWING ---<br/>function drawBoard() {<br/>ctx.clearRect(0,0,canvas.width,canvas.height);<br/></p><p id="20df9346-4f86-802f-a046-d4252f1ebabb" class="">// --- DRAW BOARD CELLS FIRST ---<br/>for(let y=0;y&lt;grid;y++) {<br/>for(let x=0;x&lt;grid;x++) {<br/>ctx.fillStyle = (x+y)%2===0?&#x27;#253e69&#x27;:&#x27;#375a92&#x27;;<br/>ctx.fillRect(x<br/><em>cell,y</em>cell,cell,cell);<br/>}<br/>}<br/></p><p id="20df9346-4f86-80f3-b5a5-d0e900932db2" class="">// --- CONDITIONAL GLOWING TARGET EDGE ---<br/>let showGlow = false, edgeColor = null, edgeY = null;<br/>if (BK.phase === &quot;play&quot;) {<br/>// Normal play: highlight edge for current turn<br/>showGlow = true;<br/>if (BK.turn === 0) {<br/>edgeColor = &quot;#7ac2ff&quot;;<br/>edgeY = cell * 9 - 5;<br/>} else {<br/>edgeColor = &quot;#ffe066&quot;;<br/>edgeY = 5;<br/>}<br/>} else if (BK.phase === &quot;placement&quot;) {<br/>// During placement, only glow for the current player when they&#x27;re picking their pawn position<br/>if (BK.pawnPositions[0] === null &amp;&amp; BK.turn === 0) {<br/>showGlow = true;<br/>edgeColor = &quot;#7ac2ff&quot;;<br/>edgeY = cell * 9 - 5;<br/>}<br/>if (BK.pawnPositions[0] !== null &amp;&amp; BK.pawnPositions[1] === null &amp;&amp; BK.turn === 1) {<br/>showGlow = true;<br/>edgeColor = &quot;#ffe066&quot;;<br/>edgeY = 5;<br/>}<br/>}<br/></p><p id="20df9346-4f86-800e-9f41-f91b988b7a86" class="">if (showGlow) {<br/>ctx.save();<br/>ctx.globalAlpha = 0.78; // Subtle<br/>ctx.shadowBlur = 22;<br/>ctx.lineWidth = 10;<br/>ctx.shadowColor = edgeColor;<br/>ctx.strokeStyle = edgeColor;<br/>ctx.beginPath();<br/>ctx.moveTo(3, edgeY);<br/>ctx.lineTo(cell * 9 - 3, edgeY);<br/>ctx.stroke();<br/>ctx.restore();<br/>ctx.globalAlpha = 1;<br/>}<br/></p><p id="20df9346-4f86-802b-8b9b-d4335f2a9403" class="">// --- DRAW WALLS ---<br/>for(const wall of BK.walls) drawGhostWall(wall);<br/>if (ghostWall) drawGhostWall(ghostWall);<br/></p><p id="20df9346-4f86-80ef-ae93-c5bd06ecb0c0" class="">// --- DRAW PAWNS ---<br/>const [p0,p1]=BK.pawnPositions;<br/>if (p0&amp;&amp;p1&amp;&amp;p0.x===p1.x&amp;&amp;p0.y===p1.y) {<br/>[[0,0],[1,1]].forEach((_,i)=&gt;{<br/>ctx.save();<br/>ctx.beginPath();<br/>ctx.arc(p0.x<br/><em>cell+cell/2+(i===0?-cell</em>.13:cell*.13),p0.y<em>cell+cell/2,cell</em>.22,0,Math.PI<em>2);<br/>ctx.fillStyle = i===0 ? &quot;#fff&quot; : &quot;#ffe066&quot;;<br/>ctx.shadowColor = i===0 ? &quot;#3c66f5&quot; : &quot;#ad9000&quot;;<br/>ctx.shadowBlur = 10;<br/>ctx.fill();<br/>ctx.lineWidth = 3;<br/>ctx.strokeStyle = &quot;#293c6a&quot;;<br/>ctx.stroke();<br/>ctx.restore();<br/>});<br/>} else {<br/>BK.pawnPositions.forEach((pos,idx)=&gt;{<br/>if (pos) {<br/>ctx.save();<br/>ctx.beginPath();<br/>ctx.arc(pos.x<br/></em>cell+cell/2,pos.y<em>cell+cell/2,cell</em>.32,0,Math.PI*2);<br/>ctx.fillStyle = idx===0?&quot;#fff&quot;:&quot;#ffe066&quot;;<br/>ctx.shadowColor = idx===0?&quot;#3c66f5&quot;:&quot;#ad9000&quot;;<br/>ctx.shadowBlur = 12;<br/>ctx.fill();<br/>ctx.lineWidth = 4;<br/>ctx.strokeStyle = &quot;#293c6a&quot;;<br/>ctx.stroke();<br/>ctx.restore();<br/>}<br/>});<br/>}<br/>}<br/></p><p id="20df9346-4f86-80e8-b813-cab8363e89d2" class="">// --- UI UPDATES ---<br/>function updateStatBar() {<br/>document.getElementById(&#x27;bk-panel-w&#x27;).classList.toggle(&#x27;bk-active-panel&#x27;, BK.turn===0);<br/>document.getElementById(&#x27;bk-panel-g&#x27;).classList.toggle(&#x27;bk-active-panel&#x27;, BK.turn===1);<br/>document.getElementById(&#x27;bk-avatar-w&#x27;).classList.toggle(&#x27;bk-active&#x27;, BK.turn===0);<br/>document.getElementById(&#x27;bk-avatar-g&#x27;).classList.toggle(&#x27;bk-active&#x27;, BK.turn===1);<br/>document.getElementById(&#x27;bk-walls-w&#x27;).innerText = &quot;🧱&quot;+BK.players[0].walls;<br/>document.getElementById(&#x27;bk-walls-g&#x27;).innerText = &quot;🧱&quot;+BK.players[1].walls;<br/>document.getElementById(&#x27;bk-score-w&#x27;).innerText = BK.players[0].name+&quot;: &quot;+BK.players[0].score;<br/>document.getElementById(&#x27;bk-score-g&#x27;).innerText = BK.players[1].name+&quot;: &quot;+BK.players[1].score;<br/>document.getElementById(&#x27;bk-cards-w&#x27;).innerText = &quot;Cards: &quot;+BK.cardsDrawn[0];<br/>document.getElementById(&#x27;bk-cards-g&#x27;).innerText = &quot;Cards: &quot;+BK.cardsDrawn[1];<br/>document.getElementById(&#x27;bk-card-w&#x27;).innerText = BK.currentCards[0];<br/>document.getElementById(&#x27;bk-card-g&#x27;).innerText = BK.currentCards[1];<br/>}<br/>function updateMoveControls() {<br/>document.getElementById(&#x27;bk-btn-move&#x27;).disabled = !BK.boardReady || BK.phase !== &quot;play&quot;;<br/>document.getElementById(&#x27;bk-btn-wall&#x27;).disabled = !BK.boardReady || BK.players[BK.turn].walls &lt;= 0 || BK.phase !== &quot;play&quot;;<br/>document.getElementById(&#x27;bk-btn-card&#x27;).disabled = true;<br/>document.getElementById(&#x27;bk-btn-undo&#x27;).disabled = !BK.undoStack.length;<br/>}<br/>function updateHistory() {<br/>const el=document.getElementById(&#x27;bk-movehistory-list&#x27;);<br/>el.innerHTML=&quot;&quot;;<br/>let start = Math.max(0, BK.moveHistory.length-50); // Only show last 50 moves<br/>for (let i=start;i&lt;BK.moveHistory.length;++i) {<br/>const entry = BK.moveHistory[i];<br/>if(entry.action===&#x27;move&#x27;){<br/>el.innerHTML+=<br/><code>&lt;div class=&quot;bk-moveentry&quot;&gt;         &lt;span class=&quot;bk-movewho&quot; style=&quot;color:${entry.player===0?&#x27;#7ac2ff&#x27;:&#x27;#ffe066&#x27;}&quot;&gt;${BK.players[entry.player].name}&lt;/span&gt;         &lt;span&gt;moved to&lt;/span&gt;         &lt;span class=&quot;bk-movecoords&quot;&gt;${String.fromCharCode(65+entry.to.x)}${entry.to.y+1}&lt;/span&gt;       &lt;/div&gt;</code>;<br/>}<br/>if(entry.action===&#x27;wall&#x27;){<br/>el.innerHTML+=<br/><code>&lt;div class=&quot;bk-moveentry&quot;&gt;         &lt;span class=&quot;bk-movewho&quot; style=&quot;color:${entry.player===0?&#x27;#7ac2ff&#x27;:&#x27;#ffe066&#x27;}&quot;&gt;${BK.players[entry.player].name}&lt;/span&gt;         &lt;span&gt;placed a wall at&lt;/span&gt;         &lt;span class=&quot;bk-movecoords&quot;&gt;${entry.wall.dir.toUpperCase()} ${String.fromCharCode(65+entry.wall.x)}${entry.wall.y+1}&lt;/span&gt;       &lt;/div&gt;</code>;<br/>}<br/>}<br/>el.scrollTop = el.scrollHeight;<br/>}<br/>function showSnackbar(msg) {<br/>const s = document.getElementById(&#x27;bk-snackbar&#x27;);<br/>s.innerText = msg;<br/>s.classList.add(&#x27;show&#x27;);<br/>setTimeout(()=&gt;s.classList.remove(&#x27;show&#x27;), 1600);<br/>}<br/>function startNewGame() {<br/>BK.players[0].walls = 10;<br/>BK.players[1].walls = 10;<br/>// Optionally reset scores here if you want: BK.players[0].score = 0; BK.players[1].score = 0;<br/>BK.pawnPositions = [null, null];<br/>BK.boardReady = false;<br/>BK.phase = &quot;placement&quot;;<br/>BK.walls = [];<br/>BK.moveHistory = [];<br/>BK.undoStack = [];<br/>BK.currentCards = [&quot;No card&quot;, &quot;No card&quot;];<br/>BK.cardsDrawn = [0,0];<br/>BK.winner = null;<br/>drawBoard();<br/>updateStatBar();<br/>updateMoveControls();<br/>updateHistory();<br/>document.getElementById(&#x27;bk-modal-newgame&#x27;).style.display = &quot;none&quot;;<br/>startPawnPlacement();<br/>}<br/>function resetGame() { location.reload(); }<br/>function drawCard() {}<br/></p><p id="20df9346-4f86-8099-8027-e08929c71108" class="">// --- INIT ---<br/>document.addEventListener(&quot;DOMContentLoaded&quot;, function() {<br/>drawBoard();<br/>updateStatBar();<br/>updateMoveControls();<br/>updateHistory();<br/>// UX: Focus Player 1 name input for fast entry<br/>document.getElementById(&#x27;bk-name-w&#x27;).focus();<br/>document.getElementById(&#x27;bk-btn-undo&#x27;).onclick = undoLastAction;<br/>});<br/>&lt;/script&gt;<br/>&lt;/body&gt;<br/>&lt;/html&gt;<br/></p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
