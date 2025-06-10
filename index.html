@@ -1,804 +1,894 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Barrier Knights</title>
-<meta name="viewport" content="width=700, initial-scale=1">
-<link href="https://fonts.googleapis.com/css?family=Quicksand:700,500|Nunito:600" rel="stylesheet">
-<style>
-/* ... [KEEP ALL YOUR CSS AS-IS] ... */
-body {
-background: #1b2654;
-margin: 0;
-font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
-color: #fff;
-min-height: 100vh;
-}
-.bk-banner {
-display: flex; align-items: center; justify-content: center;
-padding: 18px 32px 8px 32px;
-background: linear-gradient(90deg, #27437a 60%, #5faaff 100%);
-font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
-border-radius: 0 0 16px 16px;
-box-shadow: 0 4px 24px #0003;
-margin-bottom: 14px;
-letter-spacing: 2px;
-font-size: 2.2rem;
-}
-.bk-title { font-size: 2.1rem; color: #fff; font-weight: 700; letter-spacing: 2px; }
-
-.bk-statbar {
-display: flex; align-items: flex-start; justify-content: space-between; gap: 22px;
-background: rgba(40,50,90,0.92); box-shadow: 0 2px 18px #0003; border-radius: 22px;
-padding: 11px 18px; max-width: 930px; margin: 0 auto 13px auto;
-}
-.bk-player-panel {
-flex: 1 1 0; display: flex; align-items: center; gap: 10px; min-width: 110px;
-background: transparent;
-border-radius: 17px;
-transition: background 0.18s;
-padding: 3px 5px;
-}
-.bk-player-panel.bk-active-panel {
-background: #233165;
-box-shadow: 0 0 0 2px #3c66f577;
-}
-.bk-white { color: #fff; }
-.bk-gold  { color: #ffe066; }
-.bk-avatar {
-width: 48px; height: 48px; font-size: 2rem; font-weight: 800; border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-box-shadow: 0 0 0 4px #3c66f5, 0 2px 10px #0005; background: #fff;
-color: #293c6a; margin-right: 7px; transition: box-shadow 0.22s;
-}
-.bk-gold-avatar { background: #ffe066; color: #6b5a00; box-shadow: 0 0 0 4px #ffe06688, 0 2px 10px #0005; }
-.bk-avatar.bk-active, .bk-gold-avatar.bk-active {
-box-shadow: 0 0 0 9px #ffe066bb, 0 2px 26px #ffe06680, 0 0 25px #ffe06655;
-outline: 4px solid #ffe066;
-outline-offset: 3px;
-z-index: 1;
-transition: box-shadow 0.18s, outline 0.18s;
-}
-.bk-avatar.bk-active {
-box-shadow: 0 0 0 9px #7ac2ffbb, 0 2px 26px #7ac2ff80, 0 0 25px #fff4;
-outline: 4px solid #5faaff;
-outline-offset: 3px;
-transition: box-shadow 0.18s, outline 0.18s;
-}
-.bk-player-details { display: flex; flex-direction: column; gap: 4px; }
-.bk-player-name { font-size: 1.02rem; font-weight: 700; display: flex; align-items: center; gap: 7px;}
-.bk-edit-btn { border: none; background: none; font-size: 1rem; cursor: pointer; color: #7ad7ff; padding: 0; }
-.bk-chips { display: flex; align-items: center; gap: 7px; margin-top: 0;}
-.bk-chip { border-radius: 9px; background: #2f395e; color: #cde5ff; font-size: .94rem; font-weight: 500; padding: 3px 10px; display: flex; align-items: center;}
-.bk-walls  { background: #232c46; color: #ffe066;}
-.bk-cards  { background: #314d6b; color: #53a2ff;}
-.bk-currentcard { background: #222; color: #fff; min-width: 38px; justify-content: center; }
-.bk-scorecenter { flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-font-size: 1rem; font-weight: 700; letter-spacing: 1.1px;}
-.bk-score-white { color: #7ac2ff; } .bk-score-mid { color: #eee; font-size:0.98em;} .bk-score-gold { color: #ffe066;}
-.bk-controls-row { display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 12px 0; }
-.bk-btn {
-border: 1.3px solid #3c466f22; border-radius: 13px; font-size: 1.12rem; font-weight: 700; padding: 9px 23px;
-box-shadow: 0 2px 10px #18357c13; cursor: pointer; background: #222d44; color: #fff;
-transition: background 0.13s, color 0.13s, box-shadow 0.14s, border 0.16s;
-outline: none;
-}
-.bk-modal-content .bk-btn {
-border: 1.8px solid #7ac2ff88 !important;
-background: #25305a;
-box-shadow: 0 3px 10px #1116;
-}
-.bk-btn.active, .bk-btn:focus { outline: 2px solid #79d2ff;}
-.bk-move.active { background: #ffe066; color: #222; border-color: #ffe06688;}
-.bk-wall.active { background: #7ac2ff; color: #222; border-color: #7ac2ff;}
-.bk-btn:disabled { background: #31394e; color: #a5b1d9; cursor: not-allowed;}
-.bk-btn:not(:disabled):hover {
-background: #407bfa; color: #fff;
-box-shadow: 0 6px 22px #5faaff33;
-border-color: #7ac2ff;
-}
-.bk-board-area-flex {
-display: flex;
-align-items: flex-start;
-justify-content: center;
-gap: 22px;
-max-width: 1250px;
-margin: 0 auto 30px auto;
-min-height: 560px;
-}
-.bk-board-container {
-display: flex; justify-content: center; align-items: center;
-background: #232c46; border-radius: 19px; box-shadow: 0 4px 32px #12214025;
-width: 504px; height: 504px; min-width: 300px; min-height: 300px;
-position: relative;
-}
-#bk-board { border-radius: 13px; box-shadow: 0 4px 22px #12214015; background: #1b2654; display: block;}
-.bk-movehistory-panel {
-position: sticky;
-top: 90px;
-align-self: flex-start;
-background: rgba(36,41,65,0.94);
-border-radius: 16px;
-box-shadow: 0 2px 18px #0005;
-padding: 13px 19px;
-width: 200px;
-min-height: 150px;
-max-height: 504px;
-height: 504px;
-overflow-y: auto;
-margin-left: 0;
-}
-.bk-movehistory-panel h3 { margin: 0 0 10px 0; font-size: 1.13rem; color: #7ac2ff;}
-.bk-moveentry {
-display: grid;
-grid-template-columns: 1fr 1.2fr 1fr 1.2fr;
-align-items: center;
-gap: 0.4em;
-font-size: .97rem;
-margin-bottom: 4px;
-white-space: nowrap;
-}
-.bk-movewho { font-weight: 700;}
-.bk-movecoords { font-family: monospace; margin-left: 2px;}
-.bk-snackbar { position: fixed; left: 50%; bottom: 38px; transform: translateX(-50%); background: #232c46; color: #ffe066; border-radius: 11px; padding: 11px 24px; font-size: 1.1rem; font-weight: 700; box-shadow: 0 6px 18px #222d; opacity: 0; pointer-events: none; z-index: 999; transition: opacity 0.18s;}
-.bk-snackbar.show { opacity: 1; }
-.bk-modal { position: fixed; z-index: 99; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(10,22,50,0.32); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.22s;}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.bk-modal-content { background: #222e48; color: #fff; border-radius: 19px; box-shadow: 0 8px 64px #0004; padding: 33px 29px; min-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 17px;}
-.bk-names-input { display: flex; gap: 18px; margin: 12px 0 4px 0;}
-.bk-names-input label { font-size: 1.09rem; display: flex; flex-direction: column; gap: 5px;}
-.bk-names-input input { padding: 8px 14px; font-size: 1.04rem; border-radius: 9px; border: 1.5px solid #5387e5; background: #172146; color: #fff; margin-top: 3px;}
-.bk-modal-content button { margin-top: 10px; width: 140px; }
-@media (max-width: 1100px) {
-.bk-board-area-flex {
-flex-direction: column;
-gap: 8px;
-align-items: center;
-}
-.bk-movehistory-panel {
-position: static;
-width: 97vw;
-max-width: 420px;
-min-height: 110px;
-max-height: 180px;
-height: auto;
-margin: 14px 0 0 0;
-align-self: unset;
-}
-.bk-board-container {
-width: 92vw;
-height: 92vw;
-max-width: 97vw;
-max-height: 97vw;
-min-width: 270px;
-min-height: 270px;
-}
-#bk-board { width: 100%; height: 100%; }
-}
-@media (max-width: 700px) {
-.bk-statbar, .bk-board-area-flex { max-width: 100vw; }
-.bk-statbar { flex-direction: column; gap: 8px; padding: 8px;}
-.bk-scorecenter { order: 1; margin: 7px 0 2px 0;}
-.bk-player-panel { order: 2; min-width: 0;}
-.bk-controls-row { flex-direction: column; gap: 10px;}
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Barrier Knights</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:700,500|Nunito:600" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #1b2654;
+      font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .bk-banner {
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      padding: 18px 32px 8px 32px;
+      background: linear-gradient(90deg, #27437a 60%, #5faaff 100%);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 24px #0003;
+      margin-bottom: 14px;
+      letter-spacing: 2px;
+      font-size: 2.2rem;
+      text-align: center;
+    }
+    .bk-title { 
+      font-size: 2.1rem; 
+      color: #fff; 
+      font-weight: 700; 
+      letter-spacing: 2px; 
+      width: 100%;
+    }
+    .bk-statbar {
+      display: flex; 
+      align-items: flex-start; 
+      justify-content: space-between; 
+      gap: 22px;
+      background: rgba(40,50,90,0.92); 
+      box-shadow: 0 2px 18px #0003; 
+      border-radius: 22px;
+      padding: 11px 18px; 
+      max-width: 930px; 
+      margin: 0 auto 13px auto;
+    }
+    .bk-player-panel {
+      flex: 1 1 0; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      min-width: 110px;
+      background: transparent;
+      border-radius: 17px;
+      transition: background 0.18s;
+      padding: 3px 5px;
+    }
+    .bk-player-panel.bk-active-panel {
+      background: #233165;
+      box-shadow: 0 0 0 2px #3c66f577;
+    }
+    .bk-avatar {
+      width: 48px; height: 48px; font-size: 2rem; font-weight: 800; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px #3c66f5, 0 2px 10px #0005; background: #fff;
+      color: #293c6a; margin-right: 7px; transition: box-shadow 0.22s;
+    }
+    .bk-gold-avatar { background: #ffe066; color: #6b5a00; box-shadow: 0 0 0 4px #ffe06688, 0 2px 10px #0005; }
+    .bk-avatar.bk-active, .bk-gold-avatar.bk-active {
+      box-shadow: 0 0 0 9px #ffe066bb, 0 2px 26px #ffe06680, 0 0 25px #ffe06655;
+      outline: 4px solid #ffe066;
+      outline-offset: 3px;
+      z-index: 1;
+      transition: box-shadow 0.18s, outline 0.18s;
+    }
+    .bk-avatar.bk-active {
+      box-shadow: 0 0 0 9px #7ac2ffbb, 0 2px 26px #7ac2ff80, 0 0 25px #fff4;
+      outline: 4px solid #5faaff;
+      outline-offset: 3px;
+      transition: box-shadow 0.18s, outline 0.18s;
+    }
+    .bk-player-details { display: flex; flex-direction: column; gap: 4px; }
+    .bk-player-name { font-size: 1.02rem; font-weight: 700; display: flex; align-items: center; gap: 7px;}
+    .bk-edit-btn { border: none; background: none; font-size: 1rem; cursor: pointer; color: #7ad7ff; padding: 0; }
+    .bk-chips { display: flex; align-items: center; gap: 7px; margin-top: 0;}
+    .bk-chip { border-radius: 9px; background: #2f395e; color: #cde5ff; font-size: .94rem; font-weight: 500; padding: 3px 10px; display: flex; align-items: center;}
+    .bk-walls  { background: #232c46; color: #ffe066;}
+    .bk-cards  { background: #314d6b; color: #53a2ff;}
+    .bk-currentcard { background: #222; color: #fff; min-width: 38px; justify-content: center; }
+    .bk-scorecenter { flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      font-size: 1rem; font-weight: 700; letter-spacing: 1.1px;}
+    .bk-score-white { color: #7ac2ff; } .bk-score-mid { color: #eee; font-size:0.98em;} .bk-score-gold { color: #ffe066;}
+    .bk-controls-row { display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 12px 0; flex-wrap: wrap;}
+    .bk-btn {
+      border: 1.3px solid #3c466f22; border-radius: 13px; font-size: 1.12rem; font-weight: 700; padding: 9px 23px;
+      box-shadow: 0 2px 10px #18357c13; cursor: pointer; background: #222d44; color: #fff;
+      transition: background 0.13s, color 0.13s, box-shadow 0.14s, border 0.16s;
+      outline: none;
+    }
+    .bk-modal-content .bk-btn {
+      border: 1.8px solid #7ac2ff88 !important;
+      background: #25305a;
+      box-shadow: 0 3px 10px #1116;
+    }
+    .bk-btn.active, .bk-btn:focus { outline: 2px solid #79d2ff;}
+    .bk-move.active { background: #ffe066; color: #222; border-color: #ffe06688;}
+    .bk-wall.active { background: #7ac2ff; color: #222; border-color: #7ac2ff;}
+    .bk-btn:disabled { background: #31394e; color: #a5b1d9; cursor: not-allowed;}
+    .bk-btn:not(:disabled):hover {
+      background: #407bfa; color: #fff;
+      box-shadow: 0 6px 22px #5faaff33;
+      border-color: #7ac2ff;
+    }
+    .bk-board-area-flex {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 22px;
+      max-width: 1250px;
+      margin: 0 auto 30px auto;
+      min-height: 560px;
+    }
+    .bk-board-container {
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      background: #232c46; 
+      border-radius: 19px; 
+      box-shadow: 0 4px 32px #12214025;
+      width: 504px; 
+      height: 504px; 
+      min-width: 300px; 
+      min-height: 300px;
+      position: relative;
+      touch-action: none; /* Prevent unwanted scrolling while playing */
+    }
+    #bk-board { 
+      border-radius: 13px; 
+      box-shadow: 0 4px 22px #12214015; 
+      background: #1b2654; 
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      max-width: 100vw;
+      max-height: 90vw;
+    }
+    .bk-movehistory-panel {
+      position: sticky;
+      top: 90px;
+      align-self: flex-start;
+      background: rgba(36,41,65,0.94);
+      border-radius: 16px;
+      box-shadow: 0 2px 18px #0005;
+      padding: 13px 19px;
+      width: 200px;
+      min-height: 150px;
+      max-height: 504px;
+      height: 504px;
+      overflow-y: auto;
+      margin-left: 0;
+    }
+    .bk-movehistory-panel h3 { margin: 0 0 10px 0; font-size: 1.13rem; color: #7ac2ff;}
+    .bk-moveentry {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr 1.2fr;
+      align-items: center;
+      gap: 0.4em;
+      font-size: .97rem;
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
+    .bk-movewho { font-weight: 700;}
+    .bk-movecoords { font-family: monospace; margin-left: 2px;}
+    .bk-snackbar { position: fixed; left: 50%; bottom: 38px; transform: translateX(-50%); background: #232c46; color: #ffe066; border-radius: 11px; padding: 11px 24px; font-size: 1.1rem; font-weight: 700; box-shadow: 0 6px 18px #222d; opacity: 0; pointer-events: none; z-index: 999; transition: opacity 0.18s;}
+    .bk-snackbar.show { opacity: 1; }
+    .bk-modal { position: fixed; z-index: 99; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(10,22,50,0.32); display: flex; align-items: center; justify-content: center; animation: fadeIn 0.22s;}
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .bk-modal-content { background: #222e48; color: #fff; border-radius: 19px; box-shadow: 0 8px 64px #0004; padding: 33px 29px; min-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 17px;}
+    .bk-names-input { display: flex; gap: 18px; margin: 12px 0 4px 0;}
+    .bk-names-input label { font-size: 1.09rem; display: flex; flex-direction: column; gap: 5px;}
+    .bk-names-input input { padding: 8px 14px; font-size: 1.04rem; border-radius: 9px; border: 1.5px solid #5387e5; background: #172146; color: #fff; margin-top: 3px;}
+    .bk-modal-content button { margin-top: 10px; width: 140px; }
+    @media (max-width: 1100px) {
+      .bk-board-area-flex {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      .bk-movehistory-panel {
+        position: static;
+        width: 97vw;
+        max-width: 420px;
+        min-height: 110px;
+        max-height: 180px;
+        height: auto;
+        margin: 14px 0 0 0;
+        align-self: unset;
+      }
+      .bk-board-container {
+        width: 92vw;
+        height: 92vw;
+        max-width: 97vw;
+        max-height: 97vw;
+        min-width: 270px;
+        min-height: 270px;
+      }
+      #bk-board { width: 100%; height: 100%; }
+    }
+    @media (max-width: 700px) {
+      .bk-banner { font-size: 1.1rem; padding: 14px 5px 8px 5px; }
+      .bk-title { font-size: 1.18rem; }
+      .bk-statbar, .bk-board-area-flex { max-width: 100vw; }
+      .bk-statbar { flex-direction: column; gap: 8px; padding: 8px;}
+      .bk-scorecenter { order: 1; margin: 7px 0 2px 0;}
+      .bk-player-panel { order: 2; min-width: 0;}
+      .bk-controls-row { flex-direction: column; gap: 10px;}
+      .bk-board-container { min-width: 210px; min-height: 210px; }
+    }
+  </style>
 </head>
 <body>
-<div class="bk-banner">
-<span class="bk-title">Barrier Knights</span>
-</div>
-<div class="bk-statbar">
-<div class="bk-player-panel" id="bk-panel-w">
-<div class="bk-avatar" id="bk-avatar-w">W</div>
-<div class="bk-player-details">
-<div class="bk-player-name bk-white">
-<span id="bk-player1-name">White</span>
-<button class="bk-edit-btn" onclick="editName(0)" title="Edit Name">✏️</button>
-</div>
-<div class="bk-chips">
-<span class="bk-chip bk-walls" id="bk-walls-w">🧱10</span>
-<span class="bk-chip bk-cards" id="bk-cards-w">Cards: 0</span>
-<span class="bk-chip bk-currentcard" id="bk-card-w">No card</span>
-</div>
-</div>
-</div>
-<div class="bk-scorecenter">
-<span class="bk-score-white" id="bk-score-w">White: 0</span>
-<span class="bk-score-mid">SCORE</span>
-<span class="bk-score-gold" id="bk-score-g">Gold: 0</span>
-</div>
-<div class="bk-player-panel" id="bk-panel-g">
-<div class="bk-avatar bk-gold-avatar" id="bk-avatar-g">B</div>
-<div class="bk-player-details">
-<div class="bk-player-name bk-gold">
-<span id="bk-player2-name">Gold</span>
-<button class="bk-edit-btn" onclick="editName(1)" title="Edit Name">✏️</button>
-</div>
-<div class="bk-chips">
-<span class="bk-chip bk-walls" id="bk-walls-g">🧱10</span>
-<span class="bk-chip bk-cards" id="bk-cards-g">Cards: 0</span>
-<span class="bk-chip bk-currentcard" id="bk-card-g">No card</span>
-</div>
-</div>
-</div>
-</div>
-<div class="bk-controls-row">
-<button class="bk-btn bk-move" id="bk-btn-move" onclick="selectMoveMode()">Move</button>
-<button class="bk-btn bk-wall" id="bk-btn-wall" onclick="selectWallMode()">Wall</button>
-<button class="bk-btn bk-undo" id="bk-btn-undo" onclick="undoLastAction()">Undo</button>
-<button class="bk-btn bk-card" id="bk-btn-card" onclick="drawCard()" disabled>Pick Card</button>
-</div>
-<div class="bk-board-area-flex">
-<div class="bk-board-container">
-<canvas id="bk-board" width="504" height="504"></canvas>
-</div>
-<div class="bk-movehistory-panel"><h3>Move History</h3><div id="bk-movehistory-list"></div></div>
-</div>
-<!-- Startup Modal -->
-<div class="bk-modal" id="bk-modal-start" style="display:flex;">
-<div class="bk-modal-content">
-<h2>Enter Player Names</h2>
-<div class="bk-names-input">
-<label>Player 1 (White): <input id="bk-name-w" maxlength="12" placeholder="White" autocomplete="off" /></label>
-<label>Player 2 (Gold): <input id="bk-name-g" maxlength="12" placeholder="Gold" autocomplete="off" /></label>
-</div>
-<button class="bk-btn" onclick="submitNames()">Continue</button>
-</div>
-</div>
-<!-- Coin Toss Modal -->
-<div class="bk-modal" id="bk-modal-toss" style="display:none;">
-<div class="bk-modal-content" style="align-items:center;">
-<h2>Coin Toss</h2>
-<div style="font-size:2.2rem;margin:16px 0;">
-<span id="bk-cointoss-coin" style="display:inline-block;transition:transform 0.8s;">🪙</span>
-</div>
-<div id="bk-cointoss-desc" style="font-size:1.12rem;">Flipping...</div>
-</div>
-</div>
-<!-- New Game Modal -->
-<div class="bk-modal" id="bk-modal-newgame" style="display:none;">
-<div class="bk-modal-content">
-<h2 id="bk-winner-text">Player Wins!</h2>
-<button class="bk-btn" onclick="startNewGame();document.getElementById('bk-modal-newgame').style.display='none'">Start New Game</button>
-</div>
-</div>
-<div class="bk-snackbar" id="bk-snackbar"></div>
-<script>
-// --- GAME STATE ---
-let BK = {
-  players: [
-    { name: "White", short: "W", color: "#fff", wallColor: "#fff", score: 0, walls: 10, cards: 0, card: "No card" },
-    { name: "Gold",  short: "B", color: "#ffe066", wallColor: "#ffe066", score: 0, walls: 10, cards: 0, card: "No card" }
-  ],
-  turn: 0,
-  winner: null,
-  pawnPositions: [null, null],
-  boardReady: false,
-  phase: "names",
-  walls: [],
-  moveHistory: [],
-  undoStack: [],
-  currentCards: ["No card","No card"],
-  cardsDrawn: [0,0]
-};
-let mode = "move";
-let ghostWall = null;
-const canvas = document.getElementById('bk-board');
-const ctx = canvas.getContext('2d');
-const grid = 9;
-const cell = canvas.width / grid;
+  <div class="bk-banner">
+    <span class="bk-title">Barrier Knights</span>
+  </div>
+  <div class="bk-statbar">
+    <div class="bk-player-panel" id="bk-panel-w">
+      <div class="bk-avatar" id="bk-avatar-w">W</div>
+      <div class="bk-player-details">
+        <div class="bk-player-name bk-white">
+          <span id="bk-player1-name">White</span>
+          <button class="bk-edit-btn" onclick="editName(0)" title="Edit Name">✏️</button>
+        </div>
+        <div class="bk-chips">
+          <span class="bk-chip bk-walls" id="bk-walls-w">🧱10</span>
+          <span class="bk-chip bk-cards" id="bk-cards-w">Cards: 0</span>
+          <span class="bk-chip bk-currentcard" id="bk-card-w">No card</span>
+        </div>
+      </div>
+    </div>
+    <div class="bk-scorecenter">
+      <span class="bk-score-white" id="bk-score-w">White: 0</span>
+      <span class="bk-score-mid">SCORE</span>
+      <span class="bk-score-gold" id="bk-score-g">Gold: 0</span>
+    </div>
+    <div class="bk-player-panel" id="bk-panel-g">
+      <div class="bk-avatar bk-gold-avatar" id="bk-avatar-g">B</div>
+      <div class="bk-player-details">
+        <div class="bk-player-name bk-gold">
+          <span id="bk-player2-name">Gold</span>
+          <button class="bk-edit-btn" onclick="editName(1)" title="Edit Name">✏️</button>
+        </div>
+        <div class="bk-chips">
+          <span class="bk-chip bk-walls" id="bk-walls-g">🧱10</span>
+          <span class="bk-chip bk-cards" id="bk-cards-g">Cards: 0</span>
+          <span class="bk-chip bk-currentcard" id="bk-card-g">No card</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bk-controls-row">
+    <button class="bk-btn bk-move" id="bk-btn-move" onclick="selectMoveMode()">Move</button>
+    <button class="bk-btn bk-wall" id="bk-btn-wall" onclick="selectWallMode()">Wall</button>
+    <button class="bk-btn bk-undo" id="bk-btn-undo" onclick="undoLastAction()">Undo</button>
+    <button class="bk-btn bk-card" id="bk-btn-card" onclick="drawCard()" disabled>Pick Card</button>
+  </div>
+  <div class="bk-board-area-flex">
+    <div class="bk-board-container">
+      <canvas id="bk-board" width="504" height="504"></canvas>
+    </div>
+    <div class="bk-movehistory-panel"><h3>Move History</h3><div id="bk-movehistory-list"></div></div>
+  </div>
+  <!-- Startup Modal -->
+  <div class="bk-modal" id="bk-modal-start" style="display:flex;">
+    <div class="bk-modal-content">
+      <h2>Enter Player Names</h2>
+      <div class="bk-names-input">
+        <label>Player 1 (White): <input id="bk-name-w" maxlength="12" placeholder="White" /></label>
+        <label>Player 2 (Gold): <input id="bk-name-g" maxlength="12" placeholder="Gold" /></label>
+      </div>
+      <button class="bk-btn" onclick="submitNames()">Continue</button>
+    </div>
+  </div>
+  <!-- Coin Toss Modal -->
+  <div class="bk-modal" id="bk-modal-toss" style="display:none;">
+    <div class="bk-modal-content" style="align-items:center;">
+      <h2>Coin Toss</h2>
+      <div style="font-size:2.2rem;margin:16px 0;">
+        <span id="bk-cointoss-coin" style="display:inline-block;transition:transform 0.8s;">🪙</span>
+      </div>
+      <div id="bk-cointoss-desc" style="font-size:1.12rem;">Flipping...</div>
+    </div>
+  </div>
+  <!-- New Game Modal -->
+  <div class="bk-modal" id="bk-modal-newgame" style="display:none;">
+    <div class="bk-modal-content">
+      <h2 id="bk-winner-text">Player Wins!</h2>
+      <button class="bk-btn" onclick="startNewGame();document.getElementById('bk-modal-newgame').style.display='none'">Start New Game</button>
+    </div>
+  </div>
+  <div class="bk-snackbar" id="bk-snackbar"></div>
+  <script>
+    // --- GAME STATE ---
+    let BK = {
+      players: [
+        { name: "White", short: "W", color: "#fff", wallColor: "#fff", score: 0, walls: 10, cards: 0, card: "No card" },
+        { name: "Gold",  short: "B", color: "#ffe066", wallColor: "#ffe066", score: 0, walls: 10, cards: 0, card: "No card" }
+      ],
+      turn: 0,
+      winner: null,
+      pawnPositions: [null, null],
+      boardReady: false,
+      phase: "names",
+      walls: [],
+      moveHistory: [],
+      undoStack: [],
+      currentCards: ["No card","No card"],
+      cardsDrawn: [0,0]
+    };
+    let mode = "move";
+    let ghostWall = null;
+    const canvas = document.getElementById('bk-board');
+    const ctx = canvas.getContext('2d');
+    const grid = 9;
+    let cell = canvas.width / grid;
 
-// --- PERFORMANCE: EVENT HANDLER CLEANUP ---
-function clearCanvasHandlers() {
-  canvas.onclick = null;
-  canvas.onmousemove = null;
-  canvas.onmouseleave = null;
-}
+    // --- PERFORMANCE: EVENT HANDLER CLEANUP ---
+    function clearCanvasHandlers() {
+      canvas.onclick = null;
+      canvas.onmousemove = null;
+      canvas.onmouseleave = null;
+      canvas.ontouchstart = null;
+      canvas.ontouchmove = null;
+      canvas.ontouchend = null;
+    }
 
-// --- UI ENTRY ---
-function submitNames() {
-  BK.players[0].name = document.getElementById('bk-name-w').value.trim() || "White";
-  BK.players[1].name = document.getElementById('bk-name-g').value.trim() || "Gold";
-  document.getElementById('bk-player1-name').innerText = BK.players[0].name;
-  document.getElementById('bk-player2-name').innerText = BK.players[1].name;
-  document.getElementById('bk-modal-start').style.display = "none";
-  startCoinToss();
-}
-function editName(idx) {
-  const n = prompt("Enter new name for " + BK.players[idx].name + ":", BK.players[idx].name);
-  if (n) {
-    BK.players[idx].name = n.slice(0,12);
-    document.getElementById(idx===0?'bk-player1-name':'bk-player2-name').innerText = BK.players[idx].name;
-    drawBoard();
-  }
-}
-function startCoinToss() {
-  showModal('bk-modal-toss');
-  const coin = document.getElementById('bk-cointoss-coin');
-  const desc = document.getElementById('bk-cointoss-desc');
-  coin.innerText = Math.random() > 0.5 ? '⚪' : '🟡';
-  desc.innerText = "Flipping...";
-  setTimeout(() => {
-    BK.turn = Math.random() < 0.5 ? 0 : 1;
-    coin.innerText = BK.turn === 0 ? '⚪' : '🟡';
-    coin.style.transform = 'rotateY(1440deg)';
-    setTimeout(() => {
-      coin.style.transform = 'rotateY(0deg)';
-      desc.innerHTML = `<b>${BK.players[BK.turn].name}</b> wins the toss and starts first.`;
+    // --- RESIZE FOR MOBILE ---
+    function resizeBoard() {
+      // On mobile, canvas should fill container
+      const parent = canvas.parentElement;
+      const size = Math.min(parent.offsetWidth, parent.offsetHeight);
+      canvas.width = canvas.height = size;
+      cell = canvas.width / grid;
+      drawBoard();
+    }
+    window.addEventListener('resize', resizeBoard);
+
+    // --- UI ENTRY ---
+    function submitNames() {
+      BK.players[0].name = document.getElementById('bk-name-w').value.trim() || "White";
+      BK.players[1].name = document.getElementById('bk-name-g').value.trim() || "Gold";
+      document.getElementById('bk-player1-name').innerText = BK.players[0].name;
+      document.getElementById('bk-player2-name').innerText = BK.players[1].name;
+      document.getElementById('bk-modal-start').style.display = "none";
+      startCoinToss();
+    }
+    function editName(idx) {
+      const n = prompt("Enter new name for " + BK.players[idx].name + ":", BK.players[idx].name);
+      if (n) {
+        BK.players[idx].name = n.slice(0,12);
+        document.getElementById(idx===0?'bk-player1-name':'bk-player2-name').innerText = BK.players[idx].name;
+        drawBoard();
+      }
+    }
+    function startCoinToss() {
+      showModal('bk-modal-toss');
+      const coin = document.getElementById('bk-cointoss-coin');
+      const desc = document.getElementById('bk-cointoss-desc');
+      coin.innerText = Math.random() > 0.5 ? '⚪' : '🟡';
+      desc.innerText = "Flipping...";
       setTimeout(() => {
-        document.getElementById('bk-modal-toss').style.display = "none";
-        startPawnPlacement();
-      }, 1200);
-    }, 800);
-  }, 1000);
-}
-function showModal(id) {
-  document.querySelectorAll('.bk-modal').forEach(m => m.style.display = "none");
-  document.getElementById(id).style.display = "flex";
-}
+        BK.turn = Math.random() < 0.5 ? 0 : 1;
+        coin.innerText = BK.turn === 0 ? '⚪' : '🟡';
+        coin.style.transform = 'rotateY(1440deg)';
+        setTimeout(() => {
+          coin.style.transform = 'rotateY(0deg)';
+          desc.innerHTML = `<b>${BK.players[BK.turn].name}</b> wins the toss and starts first.`;
+          setTimeout(() => {
+            document.getElementById('bk-modal-toss').style.display = "none";
+            startPawnPlacement();
+          }, 1200);
+        }, 800);
+      }, 1000);
+    }
+    function showModal(id) {
+      document.querySelectorAll('.bk-modal').forEach(m => m.style.display = "none");
+      document.getElementById(id).style.display = "flex";
+    }
 
-// --- PAWN PLACEMENT ---
-function startPawnPlacement() {
-  BK.phase = "placement";
-  BK.pawnPositions = [null, null];
-  drawBoard();
-  pawnPlaceStep(BK.turn, () => {
-    pawnPlaceStep(1 - BK.turn, () => {
-      BK.phase = "play";
-      BK.boardReady = true;
+    // --- PAWN PLACEMENT ---
+    function startPawnPlacement() {
+      BK.phase = "placement";
+      BK.pawnPositions = [null, null];
+      drawBoard();
+      pawnPlaceStep(BK.turn, () => {
+        pawnPlaceStep(1 - BK.turn, () => {
+          BK.phase = "play";
+          BK.boardReady = true;
+          drawBoard();
+          updateStatBar();
+          updateMoveControls();
+          selectMoveMode();
+        });
+      });
+    }
+    function pawnPlaceStep(idx, callback) {
+      showSnackbar(`${BK.players[idx].name}, place your pawn!`);
+      highlightRow(idx===0?0:8, idx);
+      clearCanvasHandlers();
+      function onPlace(e) {
+        let evt = e;
+        if (e.touches && e.touches.length) {
+          const rect = canvas.getBoundingClientRect();
+          evt = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY
+          };
+        }
+        const {x,y} = mouseToCell(evt);
+        if ((idx===0 && y===0)||(idx===1 && y===8)) {
+          BK.pawnPositions[idx] = {x, y};
+          drawBoard();
+          clearCanvasHandlers();
+          callback();
+        }
+      }
+      canvas.onclick = onPlace;
+      canvas.ontouchstart = function(e) { e.preventDefault(); onPlace(e); };
+    }
+    function highlightRow(row, idx) {
+      drawBoard();
+      for (let x = 0; x < 9; ++x) {
+        ctx.save();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = idx===0?'#7ac2ff':'#ffe066';
+        ctx.shadowColor = ctx.strokeStyle+"88";
+        ctx.shadowBlur = 9;
+        ctx.strokeRect(x*cell+3, row*cell+3, cell-6, cell-6);
+        ctx.restore();
+      }
+    }
+
+    // --- MOVE & WALL MODES ---
+    function selectMoveMode() {
+      if (!BK.boardReady || BK.phase !== "play") return;
+      mode = "move";
+      document.getElementById('bk-btn-move').classList.add('active');
+      document.getElementById('bk-btn-wall').classList.remove('active');
+      drawBoard();
+      highlightValidMoves();
+      setMoveHandler();
+    }
+    function selectWallMode() {
+      if (!BK.boardReady || BK.phase !== "play" || BK.players[BK.turn].walls <= 0) return;
+      mode = "wall";
+      document.getElementById('bk-btn-wall').classList.add('active');
+      document.getElementById('bk-btn-move').classList.remove('active');
+      drawBoard();
+      setWallHandler();
+    }
+    function setMoveHandler() {
+      clearCanvasHandlers();
+      function handle(e) {
+        let evt = e;
+        if (e.touches && e.touches.length) {
+          const rect = canvas.getBoundingClientRect();
+          evt = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY
+          };
+        }
+        if (BK.phase !== "play" || mode !== "move") return;
+        const idx = BK.turn, pos = BK.pawnPositions[idx];
+        const {x,y} = mouseToCell(evt);
+        if (!isValidMove(pos, {x, y})) return;
+        pushUndo();
+        BK.pawnPositions[idx] = {x, y};
+        BK.moveHistory.push({ player: idx, action: 'move', to: {x, y} });
+        if ((idx===0&&y===8)||(idx===1&&y===0)) {
+          BK.players[idx].score++;
+          BK.winner = idx;
+          document.getElementById('bk-winner-text').innerText = BK.players[idx].name + " wins!";
+          document.getElementById('bk-modal-newgame').style.display = "flex";
+          updateStatBar(); updateMoveControls(); updateHistory(); drawBoard();
+          clearCanvasHandlers();
+          return;
+        }
+        BK.turn = 1-BK.turn;
+        updateStatBar();
+        updateMoveControls();
+        updateHistory();
+        drawBoard();
+        highlightValidMoves();
+        setMoveHandler();
+      }
+      canvas.onclick = handle;
+      canvas.ontouchstart = function(e) { e.preventDefault(); handle(e); };
+    }
+    function highlightValidMoves() {
+      if (BK.phase !== "play") return;
+      const idx = BK.turn;
+      const pos = BK.pawnPositions[idx];
+      const moves = getValidMoves(idx);
+      for (let move of moves) {
+        ctx.save();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = idx===0 ? "#7ac2ff" : "#ffe066";
+        ctx.shadowColor = idx===0 ? "#7ac2ff" : "#ffe066";
+        ctx.shadowBlur = 14;
+        ctx.strokeRect(move.x*cell+5, move.y*cell+5, cell-10, cell-10);
+        ctx.restore();
+      }
+    }
+    function getValidMoves(idx) {
+      const pos = BK.pawnPositions[idx];
+      if (!pos) return [];
+      const deltas = [[0,-1],[0,1],[-1,0],[1,0]];
+      let moves = [];
+      for (let [dx, dy] of deltas) {
+        let nx = pos.x + dx, ny = pos.y + dy;
+        if (nx >= 0 && nx < 9 && ny >= 0 && ny < 9 && !blockedByWall(pos, {x: nx, y: ny}))
+          moves.push({ x: nx, y: ny });
+      }
+      return moves;
+    }
+    function isValidMove(from, to) {
+      if (!from) return false;
+      const dx = Math.abs(from.x - to.x), dy = Math.abs(from.y - to.y);
+      if (dx+dy!==1) return false;
+      if (to.x<0||to.x>8||to.y<0||to.y>8) return false;
+      if (blockedByWall(from, to)) return false;
+      return true;
+    }
+
+    // --- WALL PLACEMENT ---
+    function setWallHandler() {
+      clearCanvasHandlers();
+      if (BK.players[BK.turn].walls <= 0) {
+        updateMoveControls();
+        return;
+      }
+      function handleMove(e) {
+        let evt = e;
+        if (e.touches && e.touches.length) {
+          const rect = canvas.getBoundingClientRect();
+          evt = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY,
+            offsetX: e.touches[0].clientX - rect.left,
+            offsetY: e.touches[0].clientY - rect.top
+          };
+        }
+        if (BK.phase !== "play" || mode !== "wall" || BK.players[BK.turn].walls <= 0) return;
+        const {x,y} = mouseToCell(evt);
+        const mx = ((evt.offsetX !== undefined ? evt.offsetX : evt.clientX - canvas.getBoundingClientRect().left) / cell) - Math.floor((evt.offsetX !== undefined ? evt.offsetX : evt.clientX - canvas.getBoundingClientRect().left)/cell);
+        const my = ((evt.offsetY !== undefined ? evt.offsetY : evt.clientY - canvas.getBoundingClientRect().top) / cell) - Math.floor((evt.offsetY !== undefined ? evt.offsetY : evt.clientY - canvas.getBoundingClientRect().top)/cell);
+        ghostWall = null;
+        if (mx > my && x < 8 && y < 8) ghostWall = {x, y, dir: 'v', owner: BK.turn};
+        else if (my >= mx && x < 8 && y < 8) ghostWall = {x, y, dir: 'h', owner: BK.turn};
+        drawBoard();
+        if (ghostWall) drawGhostWall(ghostWall);
+      }
+      function handleClick(e) {
+        let evt = e;
+        if (e.touches && e.touches.length) {
+          const rect = canvas.getBoundingClientRect();
+          evt = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY,
+            offsetX: e.touches[0].clientX - rect.left,
+            offsetY: e.touches[0].clientY - rect.top
+          };
+        }
+        if (BK.phase !== "play" || mode !== "wall" || !ghostWall) return;
+        if (BK.players[BK.turn].walls <= 0) {
+          showSnackbar("You have no walls left!");
+          updateMoveControls();
+          return;
+        }
+        if (!canPlaceWall(ghostWall)) {
+          showSnackbar("Illegal wall placement.");
+          return;
+        }
+        pushUndo();
+        BK.walls.push({...ghostWall});
+        BK.players[BK.turn].walls--;
+        BK.moveHistory.push({ player: BK.turn, action: 'wall', wall: {...ghostWall} });
+        BK.turn = 1 - BK.turn;
+        updateStatBar();
+        updateMoveControls();
+        updateHistory();
+        ghostWall = null;
+        drawBoard();
+        setWallHandler();
+      }
+      canvas.onmousemove = handleMove;
+      canvas.onclick = handleClick;
+      canvas.ontouchmove = function(e) { e.preventDefault(); handleMove(e); };
+      canvas.ontouchend = function(e) { e.preventDefault(); handleClick(e); };
+      canvas.onmouseleave = function() { ghostWall = null; drawBoard(); };
+    }
+    function drawGhostWall(wall) {
+      ctx.save();
+      ctx.globalAlpha = 0.99;
+      ctx.strokeStyle = wall.owner === 0 ? "#7ac2ff" : "#ffe066";
+      ctx.lineWidth = 13;
+      ctx.lineCap = "round";
+      if (wall.dir === "h") {
+        ctx.beginPath();
+        ctx.moveTo(wall.x*cell+cell*0.08, (wall.y+1)*cell);
+        ctx.lineTo((wall.x+2)*cell-cell*0.08, (wall.y+1)*cell);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo((wall.x+1)*cell, wall.y*cell+cell*0.08);
+        ctx.lineTo((wall.x+1)*cell, (wall.y+2)*cell-cell*0.08);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function canPlaceWall(wall) {
+      if (wall.dir==='h' && (wall.x<0||wall.x>7||wall.y<0||wall.y>7)) return false;
+      if (wall.dir==='v' && (wall.x<0||wall.x>7||wall.y<0||wall.y>7)) return false;
+      for (const w of BK.walls) {
+        if (w.dir===wall.dir&&w.x===wall.x&&w.y===wall.y) return false;
+        if (wall.dir==='h'&&w.dir==='h'&&w.y===wall.y&&Math.abs(w.x-wall.x)===1) return false;
+        if (wall.dir==='v'&&w.dir==='v'&&w.x===wall.x&&Math.abs(w.y-wall.y)===1) return false;
+        if (wall.dir!==w.dir&&wall.x===w.x&&wall.y===w.y) return false;
+      }
+      BK.walls.push(wall);
+      let pass = hasPath(0)&&hasPath(1);
+      BK.walls.pop();
+      return pass;
+    }
+    function hasPath(idx) {
+      const start = BK.pawnPositions[idx];
+      if (!start) return false;
+      const targetRow = idx===0?8:0;
+      const visited = Array.from({length:9},()=>Array(9).fill(false));
+      const queue=[start];
+      while(queue.length) {
+        const {x,y}=queue.shift();
+        if (visited[x][y]) continue;
+        visited[x][y]=true;
+        if (y===targetRow) return true;
+        [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dx,dy])=>{
+          const nx=x+dx, ny=y+dy;
+          if(nx>=0&&nx<9&&ny>=0&&ny<9&&!visited[nx][ny]&&!blockedByWall({x,y},{x:nx,y:ny})) {
+            queue.push({x:nx,y:ny});
+          }
+        });
+      }
+      return false;
+    }
+    function blockedByWall(from, to) {
+      for (const wall of BK.walls) {
+        if (wall.dir==='h') {
+          if ((from.y===wall.y&&to.y===wall.y+1||from.y===wall.y+1&&to.y===wall.y)&&
+              ((from.x===wall.x)||(from.x===wall.x+1))&&from.x===to.x) return true;
+        }
+        if (wall.dir==='v') {
+          if ((from.x===wall.x&&to.x===wall.x+1||from.x===wall.x+1&&to.x===wall.x)&&
+              ((from.y===wall.y)||(from.y===wall.y+1))&&from.y===to.y) return true;
+        }
+      }
+      return false;
+    }
+    function mouseToCell(e) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+      return {x:Math.floor(mx/cell),y:Math.floor(my/cell)};
+    }
+
+    // --- UNDO STACK: EFFICIENT, LIMITED ---
+    function getGameSnapshot() {
+      return {
+        players: JSON.parse(JSON.stringify(BK.players)),
+        turn: BK.turn,
+        pawnPositions: JSON.parse(JSON.stringify(BK.pawnPositions)),
+        boardReady: BK.boardReady,
+        phase: BK.phase,
+        walls: JSON.parse(JSON.stringify(BK.walls)),
+        moveHistory: JSON.parse(JSON.stringify(BK.moveHistory)),
+        currentCards: JSON.parse(JSON.stringify(BK.currentCards)),
+        cardsDrawn: JSON.parse(JSON.stringify(BK.cardsDrawn))
+      };
+    }
+    function restoreGameSnapshot(state) {
+      BK.players = JSON.parse(JSON.stringify(state.players));
+      BK.turn = state.turn;
+      BK.pawnPositions = JSON.parse(JSON.stringify(state.pawnPositions));
+      BK.boardReady = state.boardReady;
+      BK.phase = state.phase;
+      BK.walls = JSON.parse(JSON.stringify(state.walls));
+      BK.moveHistory = JSON.parse(JSON.stringify(state.moveHistory));
+      BK.currentCards = JSON.parse(JSON.stringify(state.currentCards));
+      BK.cardsDrawn = JSON.parse(JSON.stringify(state.cardsDrawn));
+    }
+    function pushUndo() {
+      if (BK.undoStack.length > 80) BK.undoStack.shift();
+      BK.undoStack.push(getGameSnapshot());
+      updateMoveControls();
+    }
+    function undoLastAction() {
+      if (BK.undoStack.length === 0) return;
+      const prev = BK.undoStack.pop();
+      if (prev) {
+        restoreGameSnapshot(prev);
+        drawBoard();
+        updateStatBar();
+        updateMoveControls();
+        updateHistory();
+        if (mode === 'move') setMoveHandler();
+        if (mode === 'wall') setWallHandler();
+      }
+    }
+
+    // --- BOARD DRAWING ---
+    function drawBoard() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      // --- DRAW BOARD CELLS FIRST ---
+      for(let y=0;y<grid;y++) {
+        for(let x=0;x<grid;x++) {
+          ctx.fillStyle = (x+y)%2===0?'#253e69':'#375a92';
+          ctx.fillRect(x*cell,y*cell,cell,cell);
+        }
+      }
+      // --- GLOWING TARGET EDGE FOR CURRENT PLAYER (during main play only) ---
+      if (BK.phase === "play") {
+        ctx.save();
+        let edgeColor, edgeY;
+        ctx.globalAlpha = 0.78; // Subtle
+        ctx.shadowBlur = 22;
+        ctx.lineWidth = 10;
+        if (BK.turn === 0) {
+          // White: goal is bottom edge (row 8, just inside the board)
+          edgeColor = "#7ac2ff";
+          edgeY = cell * 9 - 5;
+          ctx.shadowColor = edgeColor;
+          ctx.strokeStyle = edgeColor;
+          ctx.beginPath();
+          ctx.moveTo(3, edgeY);
+          ctx.lineTo(cell * 9 - 3, edgeY);
+          ctx.stroke();
+        } else if (BK.turn === 1) {
+          // Gold: goal is top edge (row 0, just inside the board)
+          edgeColor = "#ffe066";
+          edgeY = 5;
+          ctx.shadowColor = edgeColor;
+          ctx.strokeStyle = edgeColor;
+          ctx.beginPath();
+          ctx.moveTo(3, edgeY);
+          ctx.lineTo(cell * 9 - 3, edgeY);
+          ctx.stroke();
+        }
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+
+      // --- DRAW WALLS ---
+      for(const wall of BK.walls) drawGhostWall(wall);
+      if (ghostWall) drawGhostWall(ghostWall);
+
+      // --- DRAW PAWNS ---
+      const [p0,p1]=BK.pawnPositions;
+      if (p0&&p1&&p0.x===p1.x&&p0.y===p1.y) {
+        [[0,0],[1,1]].forEach((_,i)=>{
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(p0.x*cell+cell/2+(i===0?-cell*.13:cell*.13),p0.y*cell+cell/2,cell*.22,0,Math.PI*2);
+          ctx.fillStyle = i===0 ? "#fff" : "#ffe066";
+          ctx.shadowColor = i===0 ? "#3c66f5" : "#ad9000";
+          ctx.shadowBlur = 10;
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = "#293c6a";
+          ctx.stroke();
+          ctx.restore();
+        });
+      } else {
+        BK.pawnPositions.forEach((pos,idx)=>{
+          if (pos) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(pos.x*cell+cell/2,pos.y*cell+cell/2,cell*.32,0,Math.PI*2);
+            ctx.fillStyle = idx===0?"#fff":"#ffe066";
+            ctx.shadowColor = idx===0?"#3c66f5":"#ad9000";
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#293c6a";
+            ctx.stroke();
+            ctx.restore();
+          }
+        });
+      }
+    }
+
+    // --- UI UPDATES ---
+    function updateStatBar() {
+      document.getElementById('bk-panel-w').classList.toggle('bk-active-panel', BK.turn===0);
+      document.getElementById('bk-panel-g').classList.toggle('bk-active-panel', BK.turn===1);
+      document.getElementById('bk-avatar-w').classList.toggle('bk-active', BK.turn===0);
+      document.getElementById('bk-avatar-g').classList.toggle('bk-active', BK.turn===1);
+      document.getElementById('bk-walls-w').innerText = "🧱"+BK.players[0].walls;
+      document.getElementById('bk-walls-g').innerText = "🧱"+BK.players[1].walls;
+      document.getElementById('bk-score-w').innerText = BK.players[0].name+": "+BK.players[0].score;
+      document.getElementById('bk-score-g').innerText = BK.players[1].name+": "+BK.players[1].score;
+      document.getElementById('bk-cards-w').innerText = "Cards: "+BK.cardsDrawn[0];
+      document.getElementById('bk-cards-g').innerText = "Cards: "+BK.cardsDrawn[1];
+      document.getElementById('bk-card-w').innerText = BK.currentCards[0];
+      document.getElementById('bk-card-g').innerText = BK.currentCards[1];
+    }
+    function updateMoveControls() {
+      document.getElementById('bk-btn-move').disabled = !BK.boardReady || BK.phase !== "play";
+      document.getElementById('bk-btn-wall').disabled = !BK.boardReady || BK.players[BK.turn].walls <= 0 || BK.phase !== "play";
+      document.getElementById('bk-btn-card').disabled = true;
+      document.getElementById('bk-btn-undo').disabled = !BK.undoStack.length;
+    }
+
+    function updateHistory() {
+      const el=document.getElementById('bk-movehistory-list');
+      el.innerHTML="";
+      let start = Math.max(0, BK.moveHistory.length-50); // Only show last 50 moves
+      for (let i=start;i<BK.moveHistory.length;++i) {
+        const entry = BK.moveHistory[i];
+        if(entry.action==='move'){
+          el.innerHTML+=`<div class="bk-moveentry">
+            <span class="bk-movewho" style="color:${entry.player===0?'#7ac2ff':'#ffe066'}">${BK.players[entry.player].name}</span>
+            <span>moved to</span>
+            <span class="bk-movecoords">${String.fromCharCode(65+entry.to.x)}${entry.to.y+1}</span>
+          </div>`;
+        }
+        if(entry.action==='wall'){
+          el.innerHTML+=`<div class="bk-moveentry">
+            <span class="bk-movewho" style="color:${entry.player===0?'#7ac2ff':'#ffe066'}">${BK.players[entry.player].name}</span>
+            <span>placed a wall at</span>
+            <span class="bk-movecoords">${entry.wall.dir.toUpperCase()} ${String.fromCharCode(65+entry.wall.x)}${entry.wall.y+1}</span>
+          </div>`;
+        }
+      }
+      el.scrollTop = el.scrollHeight;
+    }
+    function showSnackbar(msg) {
+      const s = document.getElementById('bk-snackbar');
+      s.innerText = msg;
+      s.classList.add('show');
+      setTimeout(()=>s.classList.remove('show'), 1600);
+    }
+    function startNewGame() {
+      BK.players[0].walls = 10;
+      BK.players[1].walls = 10;
+      BK.pawnPositions = [null, null];
+      BK.boardReady = false;
+      BK.phase = "placement";
+      BK.walls = [];
+      BK.moveHistory = [];
+      BK.undoStack = [];
+      BK.currentCards = ["No card", "No card"];
+      BK.cardsDrawn = [0,0];
+      BK.winner = null;
       drawBoard();
       updateStatBar();
       updateMoveControls();
-      selectMoveMode();
-    });
-  });
-}
-function pawnPlaceStep(idx, callback) {
-  showSnackbar(`${BK.players[idx].name}, place your pawn!`);
-  highlightRow(idx===0?0:8, idx);
-  clearCanvasHandlers();
-  canvas.onclick = function(e) {
-    const {x,y} = mouseToCell(e);
-    if ((idx===0 && y===0)||(idx===1 && y===8)) {
-      BK.pawnPositions[idx] = {x, y};
+      updateHistory();
+      document.getElementById('bk-modal-newgame').style.display = "none";
+      startPawnPlacement();
+    }
+    function resetGame() { location.reload(); }
+    function drawCard() {}
+
+    // --- INIT ---
+    document.addEventListener("DOMContentLoaded", function() {
+      resizeBoard();
       drawBoard();
-      clearCanvasHandlers();
-      callback();
-    }
-  }
-}
-function highlightRow(row, idx) {
-  drawBoard();
-  for (let x = 0; x < 9; ++x) {
-    ctx.save();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = idx===0?'#7ac2ff':'#ffe066';
-    ctx.shadowColor = ctx.strokeStyle+"88";
-    ctx.shadowBlur = 9;
-    ctx.strokeRect(x*cell+3, row*cell+3, cell-6, cell-6);
-    ctx.restore();
-  }
-}
-
-// --- MOVE & WALL MODES ---
-function selectMoveMode() {
-  if (!BK.boardReady || BK.phase !== "play") return;
-  mode = "move";
-  document.getElementById('bk-btn-move').classList.add('active');
-  document.getElementById('bk-btn-wall').classList.remove('active');
-  drawBoard();
-  highlightValidMoves();
-  setMoveHandler();
-}
-function selectWallMode() {
-  if (!BK.boardReady || BK.phase !== "play" || BK.players[BK.turn].walls <= 0) return;
-  mode = "wall";
-  document.getElementById('bk-btn-wall').classList.add('active');
-  document.getElementById('bk-btn-move').classList.remove('active');
-  drawBoard();
-  setWallHandler();
-}
-function setMoveHandler() {
-  clearCanvasHandlers();
-  canvas.onclick = function(e) {
-    if (BK.phase !== "play" || mode !== "move") return;
-    const idx = BK.turn, pos = BK.pawnPositions[idx];
-    const {x,y} = mouseToCell(e);
-    if (!isValidMove(pos, {x, y})) return;
-    pushUndo();
-    BK.pawnPositions[idx] = {x, y};
-    BK.moveHistory.push({ player: idx, action: 'move', to: {x, y} });
-    if ((idx===0&&y===8)||(idx===1&&y===0)) {
-      BK.players[idx].score++;
-      BK.winner = idx;
-      document.getElementById('bk-winner-text').innerText = BK.players[idx].name + " wins!";
-      document.getElementById('bk-modal-newgame').style.display = "flex";
-      updateStatBar(); updateMoveControls(); updateHistory(); drawBoard();
-      clearCanvasHandlers();
-      return;
-    }
-    BK.turn = 1-BK.turn;
-    updateStatBar();
-    updateMoveControls();
-    updateHistory();
-    drawBoard();
-    highlightValidMoves();
-    setMoveHandler();
-  }
-}
-function highlightValidMoves() {
-  if (BK.phase !== "play") return;
-  const idx = BK.turn;
-  const pos = BK.pawnPositions[idx];
-  const moves = getValidMoves(idx);
-  for (let move of moves) {
-    ctx.save();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = idx===0 ? "#7ac2ff" : "#ffe066";
-    ctx.shadowColor = idx===0 ? "#7ac2ff" : "#ffe066";
-    ctx.shadowBlur = 14;
-    ctx.strokeRect(move.x*cell+5, move.y*cell+5, cell-10, cell-10);
-    ctx.restore();
-  }
-}
-function getValidMoves(idx) {
-  const pos = BK.pawnPositions[idx];
-  if (!pos) return [];
-  const deltas = [[0,-1],[0,1],[-1,0],[1,0]];
-  let moves = [];
-  for (let [dx, dy] of deltas) {
-    let nx = pos.x + dx, ny = pos.y + dy;
-    if (nx >= 0 && nx < 9 && ny >= 0 && ny < 9 && !blockedByWall(pos, {x: nx, y: ny}))
-      moves.push({ x: nx, y: ny });
-  }
-  return moves;
-}
-function isValidMove(from, to) {
-  if (!from) return false;
-  const dx = Math.abs(from.x - to.x), dy = Math.abs(from.y - to.y);
-  if (dx+dy!==1) return false;
-  if (to.x<0||to.x>8||to.y<0||to.y>8) return false;
-  if (blockedByWall(from, to)) return false;
-  return true;
-}
-
-// --- WALL PLACEMENT ---
-function setWallHandler() {
-  clearCanvasHandlers();
-  if (BK.players[BK.turn].walls <= 0) {
-    updateMoveControls();
-    return;
-  }
-  canvas.onmousemove = function(e) {
-    if (BK.phase !== "play" || mode !== "wall" || BK.players[BK.turn].walls <= 0) return;
-    const {x, y} = mouseToCell(e);
-    const mx = (e.offsetX / cell) - Math.floor(e.offsetX / cell);
-    const my = (e.offsetY / cell) - Math.floor(e.offsetY / cell);
-    ghostWall = null;
-    if (mx > my && x < 8 && y < 8) ghostWall = {x, y, dir: 'v', owner: BK.turn};
-    else if (my >= mx && x < 8 && y < 8) ghostWall = {x, y, dir: 'h', owner: BK.turn};
-    drawBoard();
-    if (ghostWall) drawGhostWall(ghostWall);
-  };
-  canvas.onmouseleave = function() { ghostWall = null; drawBoard(); };
-  canvas.onclick = function(e) {
-    if (BK.phase !== "play" || mode !== "wall" || !ghostWall) return;
-    if (BK.players[BK.turn].walls <= 0) {
-      showSnackbar("You have no walls left!");
+      updateStatBar();
       updateMoveControls();
-      return;
-    }
-    if (!canPlaceWall(ghostWall)) {
-      showSnackbar("Illegal wall placement.");
-      return;
-    }
-    pushUndo();
-    BK.walls.push({...ghostWall});
-    BK.players[BK.turn].walls--;
-    BK.moveHistory.push({ player: BK.turn, action: 'wall', wall: {...ghostWall} });
-    BK.turn = 1 - BK.turn;
-    updateStatBar();
-    updateMoveControls();
-    updateHistory();
-    ghostWall = null;
-    drawBoard();
-    setWallHandler();
-  }
-}
-function drawGhostWall(wall) {
-  ctx.save();
-  ctx.globalAlpha = 0.99;
-  ctx.strokeStyle = wall.owner === 0 ? "#7ac2ff" : "#ffe066";
-  ctx.lineWidth = 13;
-  ctx.lineCap = "round";
-  if (wall.dir === "h") {
-    ctx.beginPath();
-    ctx.moveTo(wall.x*cell+cell*0.08, (wall.y+1)*cell);
-    ctx.lineTo((wall.x+2)*cell-cell*0.08, (wall.y+1)*cell);
-    ctx.stroke();
-  } else {
-    ctx.beginPath();
-    ctx.moveTo((wall.x+1)*cell, wall.y*cell+cell*0.08);
-    ctx.lineTo((wall.x+1)*cell, (wall.y+2)*cell-cell*0.08);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-function canPlaceWall(wall) {
-  if (wall.dir==='h' && (wall.x<0||wall.x>7||wall.y<0||wall.y>7)) return false;
-  if (wall.dir==='v' && (wall.x<0||wall.x>7||wall.y<0||wall.y>7)) return false;
-  for (const w of BK.walls) {
-    if (w.dir===wall.dir&&w.x===wall.x&&w.y===wall.y) return false;
-    if (wall.dir==='h'&&w.dir==='h'&&w.y===wall.y&&Math.abs(w.x-wall.x)===1) return false;
-    if (wall.dir==='v'&&w.dir==='v'&&w.x===wall.x&&Math.abs(w.y-wall.y)===1) return false;
-    if (wall.dir!==w.dir&&wall.x===w.x&&wall.y===w.y) return false;
-  }
-  BK.walls.push(wall);
-  let pass = hasPath(0)&&hasPath(1);
-  BK.walls.pop();
-  return pass;
-}
-function hasPath(idx) {
-  const start = BK.pawnPositions[idx];
-  if (!start) return false;
-  const targetRow = idx===0?8:0;
-  const visited = Array.from({length:9},()=>Array(9).fill(false));
-  const queue=[start];
-  while(queue.length) {
-    const {x,y}=queue.shift();
-    if (visited[x][y]) continue;
-    visited[x][y]=true;
-    if (y===targetRow) return true;
-    [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dx,dy])=>{
-      const nx=x+dx, ny=y+dy;
-      if(nx>=0&&nx<9&&ny>=0&&ny<9&&!visited[nx][ny]&&!blockedByWall({x,y},{x:nx,y:ny})) {
-        queue.push({x:nx,y:ny});
-      }
+      updateHistory();
+      // Bind undo
+      document.getElementById('bk-btn-undo').onclick = undoLastAction;
     });
-  }
-  return false;
-}
-function blockedByWall(from, to) {
-  for (const wall of BK.walls) {
-    if (wall.dir==='h') {
-      if ((from.y===wall.y&&to.y===wall.y+1||from.y===wall.y+1&&to.y===wall.y)&&
-          ((from.x===wall.x)||(from.x===wall.x+1))&&from.x===to.x) return true;
-    }
-    if (wall.dir==='v') {
-      if ((from.x===wall.x&&to.x===wall.x+1||from.x===wall.x+1&&to.x===wall.x)&&
-          ((from.y===wall.y)||(from.y===wall.y+1))&&from.y===to.y) return true;
-    }
-  }
-  return false;
-}
-function mouseToCell(e) {
-  const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
-  return {x:Math.floor(mx/cell),y:Math.floor(my/cell)};
-}
-
-// --- UNDO STACK: EFFICIENT, LIMITED ---
-function getGameSnapshot() {
-  return {
-    players: JSON.parse(JSON.stringify(BK.players)),
-    turn: BK.turn,
-    pawnPositions: JSON.parse(JSON.stringify(BK.pawnPositions)),
-    boardReady: BK.boardReady,
-    phase: BK.phase,
-    walls: JSON.parse(JSON.stringify(BK.walls)),
-    moveHistory: JSON.parse(JSON.stringify(BK.moveHistory)),
-    currentCards: JSON.parse(JSON.stringify(BK.currentCards)),
-    cardsDrawn: JSON.parse(JSON.stringify(BK.cardsDrawn))
-  };
-}
-function restoreGameSnapshot(state) {
-  BK.players = JSON.parse(JSON.stringify(state.players));
-  BK.turn = state.turn;
-  BK.pawnPositions = JSON.parse(JSON.stringify(state.pawnPositions));
-  BK.boardReady = state.boardReady;
-  BK.phase = state.phase;
-  BK.walls = JSON.parse(JSON.stringify(state.walls));
-  BK.moveHistory = JSON.parse(JSON.stringify(state.moveHistory));
-  BK.currentCards = JSON.parse(JSON.stringify(state.currentCards));
-  BK.cardsDrawn = JSON.parse(JSON.stringify(state.cardsDrawn));
-}
-function pushUndo() {
-  if (BK.undoStack.length > 80) BK.undoStack.shift();
-  BK.undoStack.push(getGameSnapshot());
-  updateMoveControls();
-}
-function undoLastAction() {
-  if (BK.undoStack.length === 0) return;
-  const prev = BK.undoStack.pop();
-  if (prev) {
-    restoreGameSnapshot(prev);
-    drawBoard();
-    updateStatBar();
-    updateMoveControls();
-    updateHistory();
-    if (mode === 'move') setMoveHandler();
-    if (mode === 'wall') setWallHandler();
-  }
-}
-
-// --- BOARD DRAWING ---
-function drawBoard() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // --- DRAW BOARD CELLS FIRST ---
-  for(let y=0;y<grid;y++) {
-    for(let x=0;x<grid;x++) {
-      ctx.fillStyle = (x+y)%2===0?'#253e69':'#375a92';
-      ctx.fillRect(x*cell,y*cell,cell,cell);
-    }
-  }
-
-  // --- CONDITIONAL GLOWING TARGET EDGE ---
-  let showGlow = false, edgeColor = null, edgeY = null;
-  if (BK.phase === "play") {
-    // Normal play: highlight edge for current turn
-    showGlow = true;
-    if (BK.turn === 0) {
-      edgeColor = "#7ac2ff";
-      edgeY = cell * 9 - 5;
-    } else {
-      edgeColor = "#ffe066";
-      edgeY = 5;
-    }
-  } else if (BK.phase === "placement") {
-    // During placement, only glow for the current player when they're picking their pawn position
-    if (BK.pawnPositions[0] === null && BK.turn === 0) {
-      showGlow = true;
-      edgeColor = "#7ac2ff";
-      edgeY = cell * 9 - 5;
-    }
-    if (BK.pawnPositions[0] !== null && BK.pawnPositions[1] === null && BK.turn === 1) {
-      showGlow = true;
-      edgeColor = "#ffe066";
-      edgeY = 5;
-    }
-  }
-
-  if (showGlow) {
-    ctx.save();
-    ctx.globalAlpha = 0.78; // Subtle
-    ctx.shadowBlur = 22;
-    ctx.lineWidth = 10;
-    ctx.shadowColor = edgeColor;
-    ctx.strokeStyle = edgeColor;
-    ctx.beginPath();
-    ctx.moveTo(3, edgeY);
-    ctx.lineTo(cell * 9 - 3, edgeY);
-    ctx.stroke();
-    ctx.restore();
-    ctx.globalAlpha = 1;
-  }
-
-  // --- DRAW WALLS ---
-  for(const wall of BK.walls) drawGhostWall(wall);
-  if (ghostWall) drawGhostWall(ghostWall);
-
-  // --- DRAW PAWNS ---
-  const [p0,p1]=BK.pawnPositions;
-  if (p0&&p1&&p0.x===p1.x&&p0.y===p1.y) {
-    [[0,0],[1,1]].forEach((_,i)=>{
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(p0.x*cell+cell/2+(i===0?-cell*.13:cell*.13),p0.y*cell+cell/2,cell*.22,0,Math.PI*2);
-      ctx.fillStyle = i===0 ? "#fff" : "#ffe066";
-      ctx.shadowColor = i===0 ? "#3c66f5" : "#ad9000";
-      ctx.shadowBlur = 10;
-      ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#293c6a";
-      ctx.stroke();
-      ctx.restore();
-    });
-  } else {
-    BK.pawnPositions.forEach((pos,idx)=>{
-      if (pos) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(pos.x*cell+cell/2,pos.y*cell+cell/2,cell*.32,0,Math.PI*2);
-        ctx.fillStyle = idx===0?"#fff":"#ffe066";
-        ctx.shadowColor = idx===0?"#3c66f5":"#ad9000";
-        ctx.shadowBlur = 12;
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "#293c6a";
-        ctx.stroke();
-        ctx.restore();
-      }
-    });
-  }
-}
-
-
-
-// --- UI UPDATES ---
-function updateStatBar() {
-  document.getElementById('bk-panel-w').classList.toggle('bk-active-panel', BK.turn===0);
-  document.getElementById('bk-panel-g').classList.toggle('bk-active-panel', BK.turn===1);
-  document.getElementById('bk-avatar-w').classList.toggle('bk-active', BK.turn===0);
-  document.getElementById('bk-avatar-g').classList.toggle('bk-active', BK.turn===1);
-  document.getElementById('bk-walls-w').innerText = "🧱"+BK.players[0].walls;
-  document.getElementById('bk-walls-g').innerText = "🧱"+BK.players[1].walls;
-  document.getElementById('bk-score-w').innerText = BK.players[0].name+": "+BK.players[0].score;
-  document.getElementById('bk-score-g').innerText = BK.players[1].name+": "+BK.players[1].score;
-  document.getElementById('bk-cards-w').innerText = "Cards: "+BK.cardsDrawn[0];
-  document.getElementById('bk-cards-g').innerText = "Cards: "+BK.cardsDrawn[1];
-  document.getElementById('bk-card-w').innerText = BK.currentCards[0];
-  document.getElementById('bk-card-g').innerText = BK.currentCards[1];
-}
-function updateMoveControls() {
-  document.getElementById('bk-btn-move').disabled = !BK.boardReady || BK.phase !== "play";
-  document.getElementById('bk-btn-wall').disabled = !BK.boardReady || BK.players[BK.turn].walls <= 0 || BK.phase !== "play";
-  document.getElementById('bk-btn-card').disabled = true;
-  document.getElementById('bk-btn-undo').disabled = !BK.undoStack.length;
-}
-function updateHistory() {
-  const el=document.getElementById('bk-movehistory-list');
-  el.innerHTML="";
-  let start = Math.max(0, BK.moveHistory.length-50); // Only show last 50 moves
-  for (let i=start;i<BK.moveHistory.length;++i) {
-    const entry = BK.moveHistory[i];
-    if(entry.action==='move'){
-      el.innerHTML+=`<div class="bk-moveentry">
-        <span class="bk-movewho" style="color:${entry.player===0?'#7ac2ff':'#ffe066'}">${BK.players[entry.player].name}</span>
-        <span>moved to</span>
-        <span class="bk-movecoords">${String.fromCharCode(65+entry.to.x)}${entry.to.y+1}</span>
-      </div>`;
-    }
-    if(entry.action==='wall'){
-      el.innerHTML+=`<div class="bk-moveentry">
-        <span class="bk-movewho" style="color:${entry.player===0?'#7ac2ff':'#ffe066'}">${BK.players[entry.player].name}</span>
-        <span>placed a wall at</span>
-        <span class="bk-movecoords">${entry.wall.dir.toUpperCase()} ${String.fromCharCode(65+entry.wall.x)}${entry.wall.y+1}</span>
-      </div>`;
-    }
-  }
-  el.scrollTop = el.scrollHeight;
-}
-function showSnackbar(msg) {
-  const s = document.getElementById('bk-snackbar');
-  s.innerText = msg;
-  s.classList.add('show');
-  setTimeout(()=>s.classList.remove('show'), 1600);
-}
-function startNewGame() {
-  BK.players[0].walls = 10;
-  BK.players[1].walls = 10;
-  // Optionally reset scores here if you want: BK.players[0].score = 0; BK.players[1].score = 0;
-  BK.pawnPositions = [null, null];
-  BK.boardReady = false;
-  BK.phase = "placement";
-  BK.walls = [];
-  BK.moveHistory = [];
-  BK.undoStack = [];
-  BK.currentCards = ["No card", "No card"];
-  BK.cardsDrawn = [0,0];
-  BK.winner = null;
-  drawBoard();
-  updateStatBar();
-  updateMoveControls();
-  updateHistory();
-  document.getElementById('bk-modal-newgame').style.display = "none";
-  startPawnPlacement();
-}
-function resetGame() { location.reload(); }
-function drawCard() {}
-
-// --- INIT ---
-document.addEventListener("DOMContentLoaded", function() {
-  drawBoard();
-  updateStatBar();
-  updateMoveControls();
-  updateHistory();
-  // UX: Focus Player 1 name input for fast entry
-  document.getElementById('bk-name-w').focus();
-  document.getElementById('bk-btn-undo').onclick = undoLastAction;
-});
-</script>
+    // Extra: resize board again on device orientation change
+    window.addEventListener("orientationchange", resizeBoard);
+  </script>
 </body>
 </html>
