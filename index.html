@@ -98,6 +98,7 @@
       font-size: 1rem; font-weight: 700; letter-spacing: 1.1px;}
     .bk-score-white { color: #7ac2ff; } .bk-score-mid { color: #eee; font-size:0.98em;} .bk-score-gold { color: #ffe066;}
     .bk-controls-row { display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 12px 0; flex-wrap: wrap;}
+    
     .bk-btn {
       border: 1.3px solid #3c466f22; border-radius: 13px; font-size: 1.12rem; font-weight: 700; padding: 9px 23px;
       box-shadow: 0 2px 10px #18357c13; cursor: pointer; background: #222d44; color: #fff;
@@ -224,6 +225,84 @@
       .bk-controls-row { flex-direction: column; gap: 10px;}
       .bk-board-container { min-width: 210px; min-height: 210px; }
     }
+    /* --- Card Panel & Overlays --- */
+#card-panel {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.current-card {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: none;
+  transition: opacity 0.2s;
+}
+.current-card.visible { display: block;}
+.current-card .card-header {
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  font-weight: 700;
+}
+.current-card .card-body {
+  padding: 6px;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.current-card .card-footer {
+  padding: 6px;
+  text-align: right;
+}
+
+/* Overlay (privacy & scout) */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.overlay.hidden { display: none; }
+.overlay-content {
+  background: #222e48;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  max-width: 90vw;
+}
+.scout-modal .scout-cards {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+.scout-card {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+}
+.scout-card.selected { border-color: #f1c40f; }
+.scout-card .label-number {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
   </style>
 </head>
 <body>
@@ -269,8 +348,35 @@
     <button class="bk-btn bk-move" id="bk-btn-move" onclick="selectMoveMode()">Move</button>
     <button class="bk-btn bk-wall" id="bk-btn-wall" onclick="selectWallMode()">Wall</button>
     <button class="bk-btn bk-undo" id="bk-btn-undo" onclick="undoLastAction()">Undo</button>
-    <button class="bk-btn bk-card" id="bk-btn-card" onclick="drawCard()" disabled>Pick Card</button>
+    
   </div>
+  <!-- Card Panel -->
+<div id="card-panel">
+  <button id="bk-btn-card" class="bk-btn" onclick="drawCard()">Pick Card</button>
+  <div id="current-card" class="current-card"></div>
+</div>
+
+<!-- Privacy Overlay for Scout -->
+<div id="privacy-overlay" class="overlay hidden">
+  <div class="overlay-content">
+    <p>Hey <span id="opp-name"></span>, look away now.<br>
+       <b><span id="player-name"></span></b> is peeking cards.</p>
+    <button class="bk-btn" onclick="continueAfterOverlay()">Continue</button>
+  </div>
+</div>
+
+<!-- Scout Modal -->
+<div id="scout-modal" class="overlay hidden">
+  <div class="overlay-content scout-modal">
+    <h3>Scout Recon</h3>
+    <div class="scout-cards">
+      <div id="scout-card-1" class="scout-card"></div>
+      <div id="scout-card-2" class="scout-card"></div>
+    </div>
+    <button class="bk-btn" onclick="confirmScout()">OK</button>
+  </div>
+</div>
+
   <div class="bk-board-area-flex">
     <div class="bk-board-container">
       <canvas id="bk-board" width="504" height="504"></canvas>
@@ -322,7 +428,9 @@
       moveHistory: [],
       undoStack: [],
       currentCards: ["No card","No card"],
-      cardsDrawn: [0,0]
+      cardsDrawn: [0,0],
+      movesLeft: 1,
+
     };
     let mode = "move";
     let ghostWall = null;
@@ -398,6 +506,7 @@
     function startPawnPlacement() {
       BK.phase = "placement";
       BK.pawnPositions = [null, null];
+      BK.movesLeft = 1;
       drawBoard();
       pawnPlaceStep(BK.turn, () => {
         pawnPlaceStep(1 - BK.turn, () => {
@@ -465,44 +574,64 @@
       drawBoard();
       setWallHandler();
     }
-    function setMoveHandler() {
-      clearCanvasHandlers();
-      function handle(e) {
-        let evt = e;
-        if (e.touches && e.touches.length) {
-          const rect = canvas.getBoundingClientRect();
-          evt = {
-            clientX: e.touches[0].clientX,
-            clientY: e.touches[0].clientY
-          };
-        }
-        if (BK.phase !== "play" || mode !== "move") return;
-        const idx = BK.turn, pos = BK.pawnPositions[idx];
-        const {x,y} = mouseToCell(evt);
-        if (!isValidMove(pos, {x, y})) return;
-        pushUndo();
-        BK.pawnPositions[idx] = {x, y};
-        BK.moveHistory.push({ player: idx, action: 'move', to: {x, y} });
-        if ((idx===0&&y===8)||(idx===1&&y===0)) {
-          BK.players[idx].score++;
-          BK.winner = idx;
-          document.getElementById('bk-winner-text').innerText = BK.players[idx].name + " wins!";
-          document.getElementById('bk-modal-newgame').style.display = "flex";
-          updateStatBar(); updateMoveControls(); updateHistory(); drawBoard();
-          clearCanvasHandlers();
-          return;
-        }
-        BK.turn = 1-BK.turn;
-        updateStatBar();
-        updateMoveControls();
-        updateHistory();
-        drawBoard();
-        highlightValidMoves();
-        setMoveHandler();
-      }
-      canvas.onclick = handle;
-      canvas.ontouchstart = function(e) { e.preventDefault(); handle(e); };
+   // 3) setMoveHandler(): make sure we always repaint highlights after each interim move
+function setMoveHandler() {
+  clearCanvasHandlers();
+
+  function handleMove(e) {
+    let evt = e;
+    if (e.touches && e.touches.length) {
+      const rect = canvas.getBoundingClientRect();
+      evt = {
+        clientX: e.touches[0].clientX,
+        clientY: e.touches[0].clientY
+      };
     }
+    if (BK.phase !== "play" || mode !== "move") return;
+
+    const idx = BK.turn;
+    const from = BK.pawnPositions[idx];
+    const to = mouseToCell(evt);
+    if (!isValidMove(from, to)) return;
+
+    pushUndo();
+    BK.pawnPositions[idx] = to;
+    logHistory({ player: idx, action: 'move', to });
+    BK.movesLeft--;
+
+    // always redraw & re-highlight
+    drawBoard();
+    highlightValidMoves();
+    updateHistory();
+
+    // victory check
+    if ((idx===0 && to.y===8) || (idx===1 && to.y===0)) {
+      BK.players[idx].score++;
+      document.getElementById('bk-winner-text').innerText =
+        BK.players[idx].name + " wins!";
+      document.getElementById('bk-modal-newgame').style.display = "flex";
+      // **reshuffle deck** now that the match is over
+      initDeck();
+      updateStatBar();
+      updateMoveControls();
+      drawBoard();
+      return;
+    }
+
+    if (BK.movesLeft > 0) {
+      // still got moves: re-bind handler for next click
+      setMoveHandler();
+    } else {
+      endTurn();
+    }
+  }
+
+  canvas.onclick      = handleMove;
+  canvas.ontouchstart = e => { e.preventDefault(); handleMove(e); };
+}
+
+
+
     function highlightValidMoves() {
       if (BK.phase !== "play") return;
       const idx = BK.turn;
@@ -819,12 +948,7 @@
       document.getElementById('bk-card-w').innerText = BK.currentCards[0];
       document.getElementById('bk-card-g').innerText = BK.currentCards[1];
     }
-    function updateMoveControls() {
-      document.getElementById('bk-btn-move').disabled = !BK.boardReady || BK.phase !== "play";
-      document.getElementById('bk-btn-wall').disabled = !BK.boardReady || BK.players[BK.turn].walls <= 0 || BK.phase !== "play";
-      document.getElementById('bk-btn-card').disabled = true;
-      document.getElementById('bk-btn-undo').disabled = !BK.undoStack.length;
-    }
+   
 
     function updateHistory() {
       const el=document.getElementById('bk-movehistory-list');
@@ -849,6 +973,11 @@
       }
       el.scrollTop = el.scrollHeight;
     }
+    function logHistory(entry) {
+  BK.moveHistory.push(entry);
+  updateHistory();
+}
+
     function showSnackbar(msg) {
       const s = document.getElementById('bk-snackbar');
       s.innerText = msg;
@@ -856,26 +985,37 @@
       setTimeout(()=>s.classList.remove('show'), 1600);
     }
     function startNewGame() {
-      BK.players[0].walls = 10;
-      BK.players[1].walls = 10;
-      BK.pawnPositions = [null, null];
-      BK.boardReady = false;
-      BK.phase = "placement";
-      BK.walls = [];
-      BK.moveHistory = [];
-      BK.undoStack = [];
-      BK.currentCards = ["No card", "No card"];
-      BK.cardsDrawn = [0,0];
-      BK.winner = null;
-      drawBoard();
-      updateStatBar();
-      updateMoveControls();
-      updateHistory();
-      document.getElementById('bk-modal-newgame').style.display = "none";
-      startPawnPlacement();
-    }
+  // 1) reset state
+  BK.players[0].walls = 10;
+  BK.players[1].walls = 10;
+  BK.pawnPositions   = [null, null];
+  BK.boardReady      = false;
+  BK.phase           = "placement";
+  BK.walls           = [];
+  BK.moveHistory     = [];
+  BK.undoStack       = [];
+  BK.currentCards    = ["No card", "No card"];
+  BK.cardsDrawn      = [0,0];
+  BK.turn            = 0;
+  BK.winner          = null;
+  BK.movesLeft       = 1;
+
+  // 2) reshuffle deck
+  initDeck();
+
+  // 3) UI reset
+  drawBoard();
+  updateStatBar();
+  updateMoveControls();
+  updateHistory();
+
+  // hide the modal and start fresh
+  document.getElementById('bk-modal-newgame').style.display = "none";
+  startPawnPlacement();
+}
+
     function resetGame() { location.reload(); }
-    function drawCard() {}
+   
 
     // --- INIT ---
     document.addEventListener("DOMContentLoaded", function() {
@@ -889,6 +1029,259 @@
     });
     // Extra: resize board again on device orientation change
     window.addEventListener("orientationchange", resizeBoard);
+    // --- Deck Initialization ---
+BK.deck = [];
+function initDeck() {
+  BK.deck = [];
+  addCards('Demolish', 2);
+  addCards('SuckIt',   5);
+  addCards('Plus2',    4);
+  addCards('Fortify',  2);
+  addCards('Scout',    3);
+  shuffle(BK.deck);
+}
+function addCards(type, count) {
+  for (let i = 0; i < count; i++) BK.deck.push(type);
+}
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// --- Override updateMoveControls to include Pick Card button ---
+function updateMoveControls() {
+  document.getElementById('bk-btn-move').disabled = !BK.boardReady || BK.phase!=='play';
+  document.getElementById('bk-btn-wall').disabled = !BK.boardReady || BK.players[BK.turn].walls<=0 || BK.phase!=='play';
+  document.getElementById('bk-btn-undo').disabled = !BK.undoStack.length;
+  // Enable per-turn Pick Card
+  const pick = document.getElementById('bk-btn-card');
+  pick.disabled = !BK.boardReady || BK.phase!=='play' || BK.deck.length===0;
+}
+function setWallDemolishHandler() {
+  // 1) clear any old canvas handlers
+  clearCanvasHandlers();
+
+  // 2) disable all other controls while demolishing
+  document.getElementById('bk-btn-move').disabled = true;
+  document.getElementById('bk-btn-wall').disabled = true;
+  document.getElementById('bk-btn-undo').disabled = true;
+  document.getElementById('bk-btn-card').disabled = true;
+
+  // 3) install the demolish click handler
+  canvas.onclick = function(e) {
+    const { x, y } = mouseToCell(e);
+
+    // 4) hit-test your existing walls
+    const hit = BK.walls.find(w => {
+      if (w.dir === 'h') {
+        return y === w.y + 1 && x >= w.x && x <= w.x + 1;
+      } else {
+        return x === w.x + 1 && y >= w.y && y <= w.y + 1;
+      }
+    });
+    if (!hit) return;  // no wall here
+
+    // 5) permanently remove it
+    BK.walls = BK.walls.filter(w => w !== hit);
+
+    // 6) log the demolish (no wall++ here!)
+    logHistory({
+      player: BK.turn,
+      action: 'demolish',
+      removed: `${hit.dir.toUpperCase()} ${String.fromCharCode(65 + hit.x)}${hit.y + 1}`
+    });
+
+    // 7) teardown and hand off to next player
+    clearCanvasHandlers();
+    endTurn();     // this will re-enable all buttons, hide card UI, redraw, re-highlight
+    drawBoard();
+  };
+}
+
+
+// --- drawCard and rendering ---
+function drawCard() {
+  if (!BK.deck.length) return;
+  // 1) Pull the card
+  const card = BK.deck.shift();
+  BK.discard = BK.discard||[];
+  BK.discard.unshift(card);
+
+  // 2) Update your stat‐bar counters
+  BK.cardsDrawn[BK.turn]   = (BK.cardsDrawn[BK.turn]||0) + 1;
+  BK.currentCards[BK.turn] = card;
+  updateStatBar();
+
+  // 3) Log the draw into history (so it shows up in your Move History)
+  logHistory({ player:BK.turn, action:'draw', card });
+
+  // 4) Show the little card‐panel beside the board
+  const panel = document.getElementById('current-card');
+  panel.innerHTML = renderCardHTML(card);
+  panel.classList.remove('visible');
+  panel.offsetHeight;     // force reflow
+  panel.classList.add('visible');
+
+  // 5) Hand off to its effect
+  handleCardEffect(card);
+}
+
+
+function showCardPanel(card) {
+  const panel = document.getElementById('current-card');
+  panel.innerHTML = renderCardHTML(card);
+  panel.classList.remove('hidden');
+  if (card!=='Demolish' && card!=='Scout') {
+    setTimeout(() => panel.classList.add('hidden'), 700);
+  }
+}
+
+function renderCardHTML(card) {
+  const map = {
+    Plus2:    {emoji:'🏃', bg:'#2E8BF5', title:'+2 Moves', body:'Gain 2 extra moves this turn.'},
+    Fortify:  {emoji:'🧱', bg:'#3BA94D', title:'Fortify',  body:'Receive +2 barriers. Turn ends.'},
+    Demolish: {emoji:'💥', bg:'#D9333F', title:'Breach',   body:'Tap a wall to remove or Skip.', footer:true},
+    SuckIt:   {emoji:'⏸️', bg:'#4A4A4A', title:'Time Out', body:'Turn ends immediately.'},
+    Scout:    {emoji:'🔍', bg:'#8E44AD', title:'Scout',    body:'Secretly peek at the top two cards and reorder them. Turn ends after.'}
+  };
+  const d = map[card];
+  return `
+    <div class="card-header" style="background:${d.bg};color:#fff">
+      <span>${d.emoji}</span><span style="margin-left:8px">${d.title}</span>
+    </div>
+    <div class="card-body">${d.body}</div>
+    ${(d.footer ? `<div class="card-footer">
+      <button class="bk-btn" onclick="skipDemolish()">Skip</button>
+    </div>` : ``)}
+  `;
+}
+
+// --- Card Effects ---
+function handleCardEffect(card) {
+  switch(card) {
+    case 'Plus2':
+  BK.movesLeft += 1;          // give two extra moves on top of whatever you had
+  logHistory({player:BK.turn,action:'plus2'});
+  // no endTurn() here!
+  updateStatBar();            // so your UI shows the new count
+  updateMoveControls();
+  break;
+
+    case 'Fortify':
+      BK.movesLeft--;
+      BK.players[BK.turn].walls += 2;
+      logHistory({player:BK.turn,action:'fortify'});
+      endTurn();
+      break;
+    case 'Demolish':
+      BK.movesLeft--;
+      logHistory({player:BK.turn,action:'demolish-prompt'});
+      showSnackbar('Tap a wall to remove or Skip');
+      setWallDemolishHandler();
+      break;
+    case 'SuckIt':
+      BK.movesLeft--;
+      logHistory({player:BK.turn,action:'timeout'});
+      endTurn();
+      break;
+    case 'Scout':
+      BK.movesLeft--;
+      logHistory({player:BK.turn,action:'scout-prompt'});
+      showPrivacyOverlay();
+      break;
+  }
+}
+
+// --- Demolish skip handler ---
+// 2) skipDemolish(): immediately disable Skip and tear down
+function skipDemolish() {
+  // disable the button so it can’t be clicked again
+  const skipBtn = document.querySelector('.card-footer .bk-btn');
+  if (skipBtn) skipBtn.disabled = true;
+
+  // log it, then end the turn (which also hides the panel)
+  logHistory({ player: BK.turn, action: 'demolish', skipped: true });
+  endTurn();
+}
+
+
+// --- Scout Sequence ---
+function showPrivacyOverlay() {
+  const ov = document.getElementById('privacy-overlay');
+  document.getElementById('opp-name').innerText    = BK.players[1-BK.turn].name;
+  document.getElementById('player-name').innerText = BK.players[BK.turn].name;
+  ov.classList.remove('hidden');
+}
+function continueAfterOverlay() {
+  document.getElementById('privacy-overlay').classList.add('hidden');
+  showScoutModal();
+}
+function showScoutModal() {
+  const top2 = BK.deck.slice(0,2);
+  ['scout-card-1','scout-card-2'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.innerHTML = renderCardHTML(top2[i]);
+    el.onclick   = () => selectScoutCard(i);
+  });
+  document.getElementById('scout-modal').classList.remove('hidden');
+}
+let scoutChoice = null;
+function selectScoutCard(i) {
+  scoutChoice = i;
+  ['scout-card-1','scout-card-2'].forEach((id,j) => {
+    const el = document.getElementById(id);
+    el.classList.toggle('selected', j===i);
+    el.querySelectorAll('.label-number').forEach(n=>n.remove());
+    const lbl = document.createElement('div');
+    lbl.className = 'label-number';
+    lbl.innerText = j===i ? '1' : '2';
+    el.appendChild(lbl);
+  });
+}
+function confirmScout() {
+  if (scoutChoice===null) return;
+  const top2 = BK.deck.splice(0,2);
+  const chosen = top2[scoutChoice], other = top2[1-scoutChoice];
+  BK.deck.unshift(chosen, other);
+  logHistory({player:BK.turn,action:'scout',chosen,other});
+  document.getElementById('scout-modal').classList.add('hidden');
+  setTimeout(endTurn, 700);
+}
+
+// --- End Turn Helper ---
+// 1) endTurn(): hide _all_ card UI and reset into Move‐mode (so highlights come back)
+function endTurn() {
+  // 1) hide all card UI
+  const panel = document.getElementById('current-card');
+  panel.classList.remove('visible');
+  panel.innerHTML = '';
+  document.getElementById('scout-modal').classList.add('hidden');
+  document.getElementById('privacy-overlay').classList.add('hidden');
+
+  // 2) if the player still has moves left, just re-enter move-mode
+  if (BK.movesLeft > 0) {
+    updateStatBar();
+    updateMoveControls();
+    selectMoveMode();
+    return;
+  }
+
+  // 3) otherwise, switch players & reset
+  BK.turn = 1 - BK.turn;
+  BK.movesLeft = 1;
+  updateStatBar();
+  updateMoveControls();
+  selectMoveMode();
+}
+
+
+
+
+// --- Initialize Deck on Load ---
+initDeck();
+
   </script>
 </body>
 </html>
