@@ -1,0 +1,19 @@
+{
+  "name": "Barrier Knights",
+  "short_name": "Barrier Knights",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101a32",
+  "theme_color": "#101a32",
+  "orientation": "any",
+  "description": "A tactical barrier duel for the same screen, nearby Wi-Fi, or a clockwork opponent.",
+  "categories": ["games", "strategy"],
+  "icons": [
+    { "src": "assets/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "New duel", "short_name": "New duel", "url": "./index.html", "icons": [{ "src": "assets/app-icon.svg", "sizes": "any", "type": "image/svg+xml" }] }
+  ]
+}

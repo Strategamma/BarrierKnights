@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: barrier-knights-gateway
+    runtime: node
+    rootDir: gateway
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true

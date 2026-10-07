@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 120" role="img" aria-labelledby="title desc">
+  <title id="title">Barrier Knights</title>
+  <desc id="desc">An angular blue and gold knight crest with the Barrier Knights wordmark.</desc>
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9ad5ff"/><stop offset=".52" stop-color="#55adf2"/><stop offset="1" stop-color="#265bba"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff2a3"/><stop offset=".5" stop-color="#ffe066"/><stop offset="1" stop-color="#e59d21"/></linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#7ac2ff"/><stop offset=".48" stop-color="#e7f4ff"/><stop offset=".52" stop-color="#fff8cf"/><stop offset="1" stop-color="#ffe066"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#050a18" flood-opacity=".75"/></filter>
+  </defs>
+  <g stroke-linecap="square" filter="url(#shadow)">
+    <path d="M13 92 92 13" stroke="#7ac2ff" stroke-width="10"/><path d="M29 108 108 29" stroke="#7ac2ff" stroke-width="5" opacity=".55"/>
+    <path d="m13 28 79 79" stroke="#ffe066" stroke-width="10"/><path d="m29 12 79 79" stroke="#ffe066" stroke-width="5" opacity=".55"/>
+  </g>
+  <path d="M60 4 108 22v37c0 27-16 44-48 57C28 103 12 86 12 59V22Z" fill="#0e1932" stroke="#eaf4ff" stroke-width="3" filter="url(#shadow)"/>
+  <path d="M60 8 103 24v34c0 23-13 38-43 51Z" fill="url(#gold)"/><path d="M60 8 17 24v34c0 23 13 38 43 51Z" fill="url(#blue)"/>
+  <path d="M61 20c-18 1-30 11-34 29l12 8-6 36h54l-7-35 12-9C88 31 78 22 61 20Z" fill="#101a32"/>
+  <path d="m61 25-1 60H40l5-31-11-7c4-12 13-20 27-22Z" fill="#183c67"/><path d="m61 25 1 60h18l-6-31 11-7C82 35 74 27 61 25Z" fill="#554726"/>
+  <path d="m40 47 20-9 21 9-10 8H50Z" fill="#eaf4ff"/><path d="m47 48 13-6v10Z" fill="#7ac2ff"/><path d="m74 48-12-6v10Z" fill="#ffe066"/>
+  <path d="M47 67h28M44 77h34M41 87h40" stroke="#eaf4ff" stroke-width="4" stroke-linecap="square"/>
+  <path d="M60 18V7" stroke="#eaf4ff" stroke-width="5"/><path d="m60 7 18 9-18 3Z" fill="#ffe066"/>
+  <g filter="url(#shadow)" font-family="Impact,Haettenschweiler,Arial Narrow Bold,sans-serif" font-weight="900">
+    <text x="132" y="54" fill="#f4f8ff" font-size="48" letter-spacing="5">BARRIER</text>
+    <text x="132" y="102" fill="url(#word)" font-size="52" letter-spacing="4">KNIGHTS</text>
+  </g>
+  <path d="M134 111h367" stroke="url(#word)" stroke-width="4"/>
+</svg>
