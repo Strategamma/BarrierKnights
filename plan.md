@@ -8,4 +8,4 @@ Risks: Touch click events must retain `pointerType` where available so the previ
 
 Verification: Repeat client smoke tests for mouse movement, touch wall preview/confirm, scaled coordinates, bot response, and rotated Wi-Fi controls; run gateway regression tests and syntax checks.
 
-Status: Complete. The live v28 build was confirmed current; v29 commits board actions on pointer-down with a tested click fallback and explicit invalid-target feedback. Ten randomized client runs, gateway regressions, and syntax checks pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.
+Status: Complete. The live v28 build was confirmed current; v29 commits board actions on pointer-down with a tested click fallback and explicit invalid-target feedback. The verified Render gateway is connected in v30. Ten randomized client runs, gateway regressions, and syntax checks pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.

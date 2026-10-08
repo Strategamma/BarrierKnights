@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#101a32">
-  <meta name="bk-gateway" content="wss://barrier-knights-gateway.onrender.com">
+  <meta name="bk-gateway" content="wss://barrierknights.onrender.com">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -57,7 +57,7 @@ function makeInitialPickups(){const cells=[];for(let y=2;y<=6;y++)for(let x=0;x<
 const fresh=(gameMode='local',botDifficulty=selectedBotDifficulty)=>{const bot=gameMode==='bot';return{gameMode,botDifficulty,lastBotDecision:null,players:[{name:bot?'Gold Knight':'Blue Knight',color:bot?'#ffe066':'#7ac2ff',position:{x:4,y:bot?8:0},goalRow:bot?0:8,walls:10},{name:bot?'Blue Bot':'Gold Knight',color:bot?'#7ac2ff':'#ffe066',position:{x:4,y:bot?0:8},goalRow:bot?8:0,walls:10}],turn:0,actions:1,deck:makeDeck(),walls:[],pickups:makeInitialPickups(),pickupRespawns:[],mode:'move',preview:null,armedWall:null,pendingBreak:false,lastCard:null,lastCardFree:false,winner:null,history:[],undo:[]}};let state=fresh();let botTimer=null,cardTimer=null,lastRenderedTurn=null;
 const hallFirst=['Ember','Moonlit','Iron','Storm','Sapphire','Gilded','Frost','Crimson'],hallLast=['Bastion','Citadel','Keep','Rampart','Sanctum','Watch','Stronghold','Gate'],knightFirst=['Azure','Golden','Silent','Valiant','Runic','Dawn','Twilight','Starborn'],knightLast=['Warden','Sentinel','Lancer','Paladin','Guardian','Rook','Vanguard','Champion'];
 const randomTitle=(first,last)=>`${first[Math.floor(Math.random()*first.length)]} ${last[Math.floor(Math.random()*last.length)]}`;
-const gatewayMeta=document.querySelector('meta[name="bk-gateway"]'),gatewayURL=(typeof localStorage!=='undefined'&&localStorage.getItem('bkGatewayUrl'))||gatewayMeta?.content||'wss://barrier-knights-gateway.onrender.com',realmSessionKey='barrierKnightsRealmSession';
+const gatewayMeta=document.querySelector('meta[name="bk-gateway"]'),gatewayURL=(typeof localStorage!=='undefined'&&localStorage.getItem('bkGatewayUrl'))||gatewayMeta?.content||'wss://barrierknights.onrender.com',realmSessionKey='barrierKnightsRealmSession';
 let realmSocket=null,realmPlayerIndex=null,realmIdentity=randomTitle(knightFirst,knightLast),realmHall=randomTitle(hallFirst,hallLast),realmPeerConnected=false,realmReconnectTimer=null,realmIntentionalClose=false,realmPendingAction='list',realmHostName='',realmGuestName='',installPrompt=null;
 const getRealmSession=()=>{if(typeof localStorage==='undefined')return null;try{return JSON.parse(localStorage.getItem(realmSessionKey))}catch{return null}};
 const saveRealmSession=session=>{if(typeof localStorage!=='undefined')localStorage.setItem(realmSessionKey,JSON.stringify(session))};

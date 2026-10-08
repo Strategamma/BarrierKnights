@@ -8,7 +8,7 @@ Touch wall placement is preview-first: tap or drag to snap a ghost wall, then co
 
 The game is an offline-capable PWA with SVG plus 192/512px PNG install icons and a 180px Apple icon. It must remain Android-packageable from the same web code.
 
-Modes are Couch Siege (same device), Realm Link (nearby devices), and Clockwork Duel (bot). Realm Link groups discovery by forwarded address, lists generated identities with ⚔ Duel, and offers Create game when empty. Challenges start immediately with a fog reveal. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. `gateway/` and `render.yaml` deploy the service; verify its assigned hostname before release.
+Modes are Couch Siege (same device), Realm Link (nearby devices), and Clockwork Duel (bot). Realm Link groups discovery by forwarded address, lists generated identities with ⚔ Duel, and offers Create game when empty. Challenges start immediately with a fog reveal. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. The verified gateway is `wss://barrierknights.onrender.com`.
 
 In bot mode the human is Gold at row 8 and the Blue bot is at row 0. Each player stores a `goalRow`, used throughout pathfinding, win detection, bot evaluation, rendering, and diagnostics. Squire/Knight/Champion all use shared legality/pathfinding without hidden advantages.
 

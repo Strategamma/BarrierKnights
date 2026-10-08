@@ -28,6 +28,8 @@ Desktop input fix: the published build matched local exactly, but committed canv
 
 Board input hardening: because v28 was live yet canvas actions still failed on both phone and PC, primary board input now commits immediately on `pointerdown`, with `click` retained as a deduplicated fallback. Invalid movement taps now show explicit feedback instead of failing silently. Cache bumped to v29.
 
+Render connection completed: `https://barrierknights.onrender.com/` returns the expected ready health JSON and `wss://barrierknights.onrender.com/` sends the gateway welcome packet. Updated both client gateway fallbacks and bumped the PWA cache to v30.
+
 Current state: Rules-design phase only; no game implementation exists yet. Confirmed constraints: each player wins by reaching the far end line (the opponent's starting row). Wall placements require pathfinding so each player retains a route to that goal; pawns cannot cross walls or leave the board; each wall consumes two wall sections; no row or column may contain more than four walls, preserving at least one open path.
 
 Card proposal captured: 5× Better Luck Next Time (no effect), +2 Moves (playing it consumes one action and grants two additional actions; stacks), +2 Walls (adds two wall sections to the player's inventory), and Break the Wall (select one placed wall to remove or skip). Need settle card pickup/discard behavior and exact deck counts before implementation.
