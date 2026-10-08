@@ -2,10 +2,10 @@ Goal: Restore reliable desktop movement and wall placement on the published GitH
 
 Scope: Canvas activation input only, with regression coverage across movement, touch wall confirmation, bot play, and rotated Wi-Fi input.
 
-Approach: Replace fragile raw `pointerup` activation with standard `click` activation while retaining pointer movement for desktop wall previews.
+Approach: Commit immediately on `pointerdown`, retain a deduplicated `click` fallback, and show feedback for invalid movement targets while retaining pointer movement for wall previews.
 
 Risks: Touch click events must retain `pointerType` where available so the preview-and-confirm wall flow remains intact.
 
 Verification: Repeat client smoke tests for mouse movement, touch wall preview/confirm, scaled coordinates, bot response, and rotated Wi-Fi controls; run gateway regression tests and syntax checks.
 
-Status: Complete. Published and local files were confirmed identical; standard click activation replaces raw pointer-up, cache is v28, and repeated client plus gateway regressions pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.
+Status: Complete. The live v28 build was confirmed current; v29 commits board actions on pointer-down with a tested click fallback and explicit invalid-target feedback. Ten randomized client runs, gateway regressions, and syntax checks pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.

@@ -26,6 +26,8 @@ Pre-publish audit complete: expanded regression coverage for all card effects, v
 
 Desktop input fix: the published build matched local exactly, but committed canvas actions depended on raw `pointerup`, which can be lost on some desktop browser/input combinations. Movement and wall placement now commit through the standard `click` event; pointer movement remains responsible only for wall previews. Cache bumped to v28.
 
+Board input hardening: because v28 was live yet canvas actions still failed on both phone and PC, primary board input now commits immediately on `pointerdown`, with `click` retained as a deduplicated fallback. Invalid movement taps now show explicit feedback instead of failing silently. Cache bumped to v29.
+
 Current state: Rules-design phase only; no game implementation exists yet. Confirmed constraints: each player wins by reaching the far end line (the opponent's starting row). Wall placements require pathfinding so each player retains a route to that goal; pawns cannot cross walls or leave the board; each wall consumes two wall sections; no row or column may contain more than four walls, preserving at least one open path.
 
 Card proposal captured: 5× Better Luck Next Time (no effect), +2 Moves (playing it consumes one action and grants two additional actions; stacks), +2 Walls (adds two wall sections to the player's inventory), and Break the Wall (select one placed wall to remove or skip). Need settle card pickup/discard behavior and exact deck counts before implementation.

@@ -52,8 +52,12 @@ ids.localMode.onclick();
 let state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'local' || state.deckRemaining !== 13 || !ids.modePicker.hidden) throw new Error('Local game did not initialize from the mode picker');
 if (state.pickups.length !== 2 || state.pickups.some(p => p.y < 2 || p.y > 6 || p.x === 4)) throw new Error('Initial pickups spawned outside legal central cells');
+canvas.onclick({ clientX: 324, clientY: 108 });
+state = JSON.parse(sandbox.window.render_game_to_text());
+if (state.players[0].position.y !== 1) throw new Error('Click fallback did not move the active knight');
+ids.localMode.onclick();
 wallButtons[0].onclick();
-canvas.onclick({ clientX: 144, clientY: 144, pointerType: 'touch' });
+canvas.onpointerdown({ clientX: 144, clientY: 144, pointerType: 'touch' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.walls.length || !state.wallPreview || ids.wallConfirmBar.hidden) throw new Error('Touch wall preview placed immediately or did not arm');
 ids.confirmWall.onclick();
@@ -62,18 +66,18 @@ if (state.walls.length !== 1 || state.players[0].walls !== 9 || state.turn !== '
 ids.mobileUndo.onclick();
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.walls.length || state.players[0].walls !== 10 || state.turn !== 'Blue Knight') throw new Error('Mobile undo did not restore wall placement');
-canvas.onclick({ clientX: 216, clientY: 216, pointerType: 'touch' });
+canvas.onpointerdown({ clientX: 216, clientY: 216, pointerType: 'touch' });
 ids.cancelWall.onclick();
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.walls.length || state.wallPreview || !ids.wallConfirmBar.hidden) throw new Error('Touch wall preview cancellation failed');
 moveButtons[0].onclick();
-canvas.onclick({ clientX: 324, clientY: 108 });
+canvas.onpointerdown({ clientX: 324, clientY: 108, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.turn !== 'Gold Knight' || state.players[0].position.y !== 1) throw new Error('Local movement/turn failed');
 
 ids.localMode.onclick();
 canvasRect = { left: 50, top: 30, width: 324, height: 324 };
-canvas.onclick({ clientX: 212, clientY: 84 });
+canvas.onpointerdown({ clientX: 212, clientY: 84, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.turn !== 'Gold Knight' || state.players[0].position.y !== 1) throw new Error('Movement failed on a scaled or offset board');
 canvasRect = { left: 0, top: 0, width: 648, height: 648 };
@@ -109,7 +113,7 @@ ids.localMode.onclick();
 const winningState = sandbox.__botTest.getState();
 winningState.pickups = [];
 winningState.players[0].position = { x: 4, y: 7 };
-canvas.onclick({ clientX: 324, clientY: 612 });
+canvas.onpointerdown({ clientX: 324, clientY: 612, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.winner !== 'Blue Knight' || !ids.victory.classList.contains('show')) throw new Error('Reaching the goal row did not declare and display the winner');
 
@@ -136,7 +140,7 @@ for (let step = 0; step < 30 && state.pickups.some(p => p.x === targetPickup.x &
     ? (Math.abs(a.x - targetPickup.x) + Math.abs(a.y - targetPickup.y)) - (Math.abs(b.x - targetPickup.x) + Math.abs(b.y - targetPickup.y))
     : b.y - a.y);
   const next = choices[0];
-  canvas.onclick({ clientX: next.x * 72 + 36, clientY: next.y * 72 + 36 });
+  canvas.onpointerdown({ clientX: next.x * 72 + 36, clientY: next.y * 72 + 36, pointerType: 'mouse' });
   state = JSON.parse(sandbox.window.render_game_to_text());
 }
 if (state.pickups.some(p => p.x === targetPickup.x && p.y === targetPickup.y) || state.pickupRespawns.length !== 1) throw new Error('Pickup was not collected or queued for respawn');
@@ -148,9 +152,9 @@ state = JSON.parse(sandbox.window.render_game_to_text());
 if (!state.pickups.some(p => p.x === targetPickup.x && p.y === targetPickup.y) || state.pickupRespawns.length) throw new Error('Undo did not restore the collected pickup');
 
 ids.localMode.onclick();
-for (const y of [1, 7, 2, 6, 3, 5, 4]) canvas.onclick({ clientX: 324, clientY: y * 72 + 36 });
+for (const y of [1, 7, 2, 6, 3, 5, 4]) canvas.onpointerdown({ clientX: 324, clientY: y * 72 + 36, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
-canvas.onclick({ clientX: 324, clientY: 4 * 72 + 36 });
+canvas.onpointerdown({ clientX: 324, clientY: 4 * 72 + 36, pointerType: 'mouse' });
 const collisionState = JSON.parse(sandbox.window.render_game_to_text());
 if (collisionState.players[1].position.y !== 4 || collisionState.turn !== 'Blue Knight') throw new Error('Pawns could not share an occupied square');
 
@@ -161,7 +165,7 @@ for (const [index, difficulty] of ['squire','knight','champion'].entries()) {
   if (state.botDifficulty !== difficulty) throw new Error(`${difficulty} selection did not persist into bot game`);
   if (state.players[0].name !== 'Gold Knight' || state.players[0].position.y !== 8 || state.players[0].goalRow !== 0) throw new Error(`${difficulty} bot game did not put the human Gold player at the bottom`);
   if (state.players[1].name !== 'Blue Bot' || state.players[1].position.y !== 0 || state.players[1].goalRow !== 8) throw new Error(`${difficulty} bot game did not put the Blue bot at the top`);
-  canvas.onclick({ clientX: 324, clientY: 540 });
+  canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
   state = JSON.parse(sandbox.window.render_game_to_text());
   if (state.turn !== 'Gold Knight' || !state.lastBotDecision || !['move','wall','card','break'].includes(state.lastBotDecision.type)) throw new Error(`${difficulty} bot did not make a diagnosed legal response`);
 }
@@ -205,7 +209,7 @@ state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'wifi' || state.realmPlayerIndex !== 0 || state.players[1].name !== 'Gilded Sentinel' || socket.sent.at(-1).payload?.kind !== 'state') throw new Error('Realm Link host did not begin and synchronize a Wi-Fi match');
 if (ids.fogMatchup.textContent !== `${state.players[0].name} vs Gilded Sentinel`) throw new Error('Fog-clearing duel intro did not show both player names');
 if (!document.body.classList.contains('realm-blue') || ids.rivalName.textContent !== 'Rival · Gilded Sentinel') throw new Error('Realm Link did not label and orient the Blue host perspective');
-canvas.onclick({ clientX: 324, clientY: 540 });
+canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.players[0].position.y !== 1 || state.turn !== 'Gilded Sentinel') throw new Error('Rotated Blue perspective did not map bottom-side input to the canonical board');
 const liveWifiState = sandbox.__botTest.getState();

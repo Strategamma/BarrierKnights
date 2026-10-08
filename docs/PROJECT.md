@@ -4,7 +4,7 @@ Browser-only two-player 9×9 strategy game, built with HTML, CSS, and vanilla Ja
 
 Mobile is first-class: the board stays square and visible, controls are touch-sized, and wall placement cannot depend on hover. Pass-and-play controls sit on opposite sides; the far side rotates toward that player. +2 Moves consumes the draw action, then grants exactly two more actions.
 
-Touch wall placement is preview-first: tap or drag to snap a ghost wall to the nearest grid boundary, then explicitly confirm or cancel. Board actions commit on `click`; pointer movement only previews walls. Mobile exposes Undo; bot undo restores the completed round.
+Touch wall placement is preview-first: tap or drag to snap a ghost wall, then confirm or cancel. Board actions commit on `pointerdown`, with deduplicated `click` fallback; pointer movement only previews. Mobile exposes Undo; bot undo restores the round.
 
 The game is an offline-capable PWA with SVG plus 192/512px PNG install icons and a 180px Apple icon. It must remain Android-packageable from the same web code.
 
