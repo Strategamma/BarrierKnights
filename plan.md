@@ -1,11 +1,11 @@
-Goal: Make every major navigation state clearer and modernize Nearby Wi-Fi discovery and lobby.
+Goal: Make core actions immediately understandable and strengthen Decadence-style button hierarchy.
 
-Scope: Mode picker, rules/help, Wi-Fi discovery, waiting lobby, card feedback, victory navigation, Decadence Inc links, and gateway presence metadata.
+Scope: Move/Wall/Card controls, card-result themes, first-time onboarding cue, and primary buttons across setup, lobby, wall confirmation, and victory.
 
-Approach: Keep the existing single-page architecture; add clear back/next actions and helper text, a privacy-honest network status card, live Barrier Knights player presence, and lightweight reduced-motion-safe lobby animations.
+Approach: Use action-specific color/icon treatments, a dismissible first-run “Try me” cue on Move, outcome-specific card colors, and gold/cyan primary actions while preserving the board-first layout.
 
-Risks: Browsers cannot expose the Wi-Fi SSID or enumerate router devices. Show “Current network” and only players connected to the Barrier Knights gateway; keep network identity private and scoped by the gateway’s existing network key.
+Risks: Strong colors must retain contrast, selected/disabled states, touch sizing, and reduced-motion behavior without crowding mobile controls.
 
-Verification: Run client smoke tests, gateway integration tests, syntax checks, and the web-game browser test path where the host permits it. Check narrow-screen and reduced-motion styles statically if browser launch remains blocked.
+Verification: Extend smoke coverage for onboarding persistence and card theme classes; run interaction/gateway tests and browser screenshot workflow if available.
 
-Status: Complete. Client smoke tests, gateway integration tests, syntax checks, and diff checks pass. Browser screenshot QA is unavailable because this host has no Playwright Chromium executable.
+Status: Complete. First-run and all card themes are regression-tested; client smoke, gateway integration, syntax, and diff checks pass. Screenshot QA remains blocked by the missing Playwright Chromium executable.

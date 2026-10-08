@@ -8,7 +8,7 @@ Touch wall placement is preview-first: tap or drag to snap a ghost wall, then co
 
 The game is an offline-capable PWA with SVG plus 192/512px PNG install icons and a 180px Apple icon. It must remain Android-packageable from the same web code.
 
-Modes are same screen, Nearby Wi-Fi, and bot. Wi-Fi discovery groups by forwarded address and reports only connected Barrier Knights clients; browsers cannot expose the SSID/router device list. Generated identities appear with ⚔ Duel. Both names/colors are confirmed before the host starts and fog clears. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. Gateway: `wss://barrierknights.onrender.com`.
+Modes are same screen, Nearby Wi-Fi, and bot. Wi-Fi discovery groups by forwarded address and reports only connected Barrier Knights clients; browsers cannot expose the SSID/router device list. Generated identities appear with ⚔ Duel. Both names/colors are confirmed before the host starts and fog clears. Card events, history, victory presentation, and mutually accepted rematches synchronize between peers. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. Gateway: `wss://barrierknights.onrender.com`.
 
 In bot mode the human is Gold at row 8 and the Blue bot is at row 0. Each player stores a `goalRow`, used throughout pathfinding, win detection, bot evaluation, rendering, and diagnostics. Squire/Knight/Champion all use shared legality/pathfinding without hidden advantages.
 
@@ -18,7 +18,7 @@ Pawns may move onto the same square but may not jump over one another. When stac
 
 Branding uses cached `assets/barrier-knights-logo.svg`, a text fallback, and navigation to Decadence Inc.
 
-Presentation effects are code-native and non-blocking: requestAnimationFrame handles pawn interpolation and canvas pickup/wall impacts; CSS handles selected actions, turn emphasis, card/setup/victory transitions, and confetti. `prefers-reduced-motion` suppresses decorative motion. Logical state remains authoritative throughout animation.
+Presentation uses cyan Move, amber Wall, violet Card, and gold primary controls. Effects are code-native: requestAnimationFrame handles pawn/canvas motion; CSS handles action, card, setup, victory, and confetti transitions. `prefers-reduced-motion` suppresses decoration. Logical state remains authoritative.
 
 Mobile sizing uses a CSS `--viewport-height` refreshed from the Visual Viewport API so browser chrome, orientation changes, and zoom constrain the board without hiding controls.
 

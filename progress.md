@@ -16,5 +16,23 @@ Verification:
 
 TODO:
 - Redeploy the Render gateway for presence metadata to reach production.
-- Publish the v31 static files.
+- Publish the v32 static files.
 - Decadence Inc navigation depends on that domain's TLS certificate being corrected.
+
+2026-10-09 multiplayer feedback update:
+- Synchronized opponent card reveals using a monotonic card event number, including Break the Wall draws.
+- Added shared Wi-Fi move history on desktop and mobile.
+- Remote winners now trigger the same victory dialog and confetti.
+- Added mutual rematch requests; only the host creates the fresh synchronized board after both players accept.
+- Client smoke and gateway integration suites pass. PWA cache is v32.
+- History rendering uses text nodes so synchronized peer text cannot inject markup.
+- Portrait Wi-Fi board sizing now reserves space for the collapsed history control; compact landscape history overlays from the top.
+- Playwright screenshot QA was attempted again but the Chromium executable is not installed on this host.
+
+2026-10-09 action clarity update:
+- Move, Wall, and Card now use distinct cyan/amber/violet treatments and clear icons on desktop and mobile.
+- Added a first-run bouncing “Try me” cue on Move; any action selection dismisses and remembers it.
+- Card popups use semantic backgrounds for Blank, +2 Moves, +2 Walls, and Break the Wall.
+- Strengthened Decadence gold/cyan hierarchy across setup, duel, create/start, wall confirmation, install, and rematch actions.
+- PWA cache bumped to v33.
+- Client smoke passed 3/3, gateway tests passed 3/3, and syntax/diff checks passed. Playwright still cannot launch because its Chromium executable is absent.
