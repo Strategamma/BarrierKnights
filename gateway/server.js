@@ -12,7 +12,14 @@ const publicHall = hall => ({ id: hall.id, name: hall.name, hostName: hall.playe
 
 function cleanupExpired() {
   const now = Date.now();
-  for (const [id, hall] of halls) if (hall.expiresAt && hall.expiresAt <= now) halls.delete(id);
+  for (const hall of halls.values()) if (hall.expiresAt && hall.expiresAt <= now) {
+    for (const player of hall.players) if (player?.socket) {
+      send(player.socket, { type: 'peer-left', canRejoin: false });
+      const client = clients.get(player.socket);
+      if (client) { client.hallId = null; client.playerIndex = null; }
+    }
+    halls.delete(hall.id);
+  }
 }
 
 const nearby = key => {
@@ -40,10 +47,12 @@ function leave(socket) {
   const hall = client.hallId && halls.get(client.hallId);
   if (hall && client.playerIndex !== null) {
     const slot = hall.players[client.playerIndex];
-    if (slot?.socket === socket) slot.socket = null;
-    hall.expiresAt = Date.now() + REJOIN_TTL_MS;
-    send(hall.players[1 - client.playerIndex]?.socket, { type: 'peer-left', canRejoin: true, expiresAt: hall.expiresAt });
-    broadcastNearby(hall.network);
+    if (slot?.socket === socket) {
+      slot.socket = null;
+      hall.expiresAt = Date.now() + REJOIN_TTL_MS;
+      send(hall.players[1 - client.playerIndex]?.socket, { type: 'peer-left', canRejoin: true, expiresAt: hall.expiresAt });
+      broadcastNearby(hall.network);
+    }
   }
   clients.delete(socket);
 }
@@ -54,6 +63,7 @@ export function handleMessage(socket, raw) {
   cleanupExpired();
   let message;
   try { message = JSON.parse(raw); } catch { return send(socket, { type: 'error', message: 'Invalid message.' }); }
+  if (!message || typeof message !== 'object' || Array.isArray(message)) return send(socket, { type: 'error', message: 'Invalid message.' });
   if (message.type === 'list') return send(socket, { type: 'halls', halls: nearby(client.network) });
   if (message.type === 'host') {
     leaveHallOnly(socket);

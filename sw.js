@@ -1,5 +1,5 @@
-const CACHE = 'barrier-knights-v24';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './assets/barrier-knights-logo.svg', './assets/app-icon.svg'];
+const CACHE = 'barrier-knights-v27';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './assets/barrier-knights-logo.svg', './assets/app-icon.svg', './assets/app-icon-192.png', './assets/app-icon-512.png', './assets/apple-touch-icon.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

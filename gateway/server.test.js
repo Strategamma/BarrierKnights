@@ -8,6 +8,12 @@ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const url = `ws://127.0.0.1:${server.address().port}`;
 const connect = () => new Promise(resolve => { const ws = new WebSocket(url); ws.once('open', () => resolve(ws)); });
 const next = (ws, type) => new Promise(resolve => { const listener = raw => { const value = JSON.parse(raw); if (value.type === type) { ws.off('message', listener); resolve(value); } }; ws.on('message', listener); });
+const noMessage = (ws, type, delay = 60) => new Promise((resolve, reject) => {
+  const listener = raw => { const value = JSON.parse(raw); if (value.type === type) { cleanup(); reject(new Error(`Unexpected ${type} message`)); } };
+  const timer = setTimeout(() => { cleanup(); resolve(); }, delay);
+  const cleanup = () => { clearTimeout(timer); ws.off('message', listener); };
+  ws.on('message', listener);
+});
 
 test('hosts, discovers, joins, and relays a nearby hall', async () => {
   const host = await connect(), guest = await connect();
@@ -34,6 +40,31 @@ test('hosts, discovers, joins, and relays a nearby hall', async () => {
   assert.equal((await restored).payload.state.marker, 'saved');
   assert.equal((await peerRejoined).playerName, 'Azure Warden');
   replacement.close(); guest.close();
+});
+
+test('rejoining over a live seat does not emit a false disconnect', async () => {
+  const host = await connect(), guest = await connect();
+  host.send(JSON.stringify({ type: 'host', name: 'Storm Keep', playerName: 'Azure Rook' }));
+  const hosted = await next(host, 'hosting');
+  guest.send(JSON.stringify({ type: 'join', hallId: hosted.hall.id, playerName: 'Golden Guard' }));
+  await next(host, 'peer-joined');
+
+  const replacement = await connect();
+  replacement.send(JSON.stringify({ type: 'rejoin', hallId: hosted.hall.id, token: hosted.rejoinToken }));
+  await next(replacement, 'rejoined');
+  await next(guest, 'peer-rejoined');
+  await noMessage(guest, 'peer-left');
+
+  replacement.close(); guest.close();
+});
+
+test('rejects valid JSON values that are not protocol messages', async () => {
+  const socket = await connect();
+  socket.send('null');
+  assert.equal((await next(socket, 'error')).message, 'Invalid message.');
+  socket.send('[]');
+  assert.equal((await next(socket, 'error')).message, 'Invalid message.');
+  socket.close();
 });
 
 test.after(() => new Promise(resolve => server.close(resolve)));

@@ -10,6 +10,7 @@ Serve this folder with any static web server and open `index.html` through the s
 
 - Publish the static files to the website host.
 - Deploy `render.yaml` on Render for nearby-game discovery and synchronization.
-- Point `gateway.decadenceinc.com` to the Render service, or update the `bk-gateway` meta tag in `index.html`.
+- Confirm the deployed Render hostname returns the gateway health JSON, then set that `wss://` hostname in the `bk-gateway` meta tag in `index.html`.
+- Confirm the website custom domain has a valid HTTPS certificate before announcing the release; PWA installation and service workers require a secure origin.
 
 Gateway-specific setup is documented in `gateway/README.md`.

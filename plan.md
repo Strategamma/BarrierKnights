@@ -1,11 +1,11 @@
-Goal: Replace automatic nearby matchmaking with an explicit Create/Join lobby and creator-controlled start.
+Goal: Complete a pre-publish bug audit and fix confirmed release blockers.
 
-Scope: Nearby entry choices, game browser, two-player identity/color confirmation, creator-only Start game, and lobby-safe reconnection.
+Scope: Core rules and controls, same-device/bot/Wi-Fi flows, reconnect and synchronization, responsive UI hooks, gateway validation, and PWA install/offline assets.
 
-Approach: Separate connection from match start. Host and guest remain in a synchronized lobby until both are present and the Blue host explicitly starts; the first state snapshot transitions both devices into play.
+Approach: Inspect the full executable surface, expand deterministic regression coverage around weak paths, run repeated client/gateway tests and static validation, then fix only reproduced or clearly provable defects.
 
-Risks: Joining or reconnecting must never bypass the lobby, and only the creator may initiate the opening state.
+Risks: Browser screenshot automation is restricted by the host; live Render discovery depends on deployment state; service-worker behavior differs on file URLs versus HTTPS.
 
-Verification: Test Create/Join choice, hosted lobby, both identity/color rows, creator-only start, no early board transition, state synchronization, and existing reconnect/gameplay coverage.
+Verification: Exercise movement, wall placement/path preservation, cards, pickups, undo, bot turns, victory, Wi-Fi perspectives/reconnect, malformed gateway input, manifest/icons/cache, asset serving, and syntax.
 
-Status: Complete. Client smoke tests verify the choice screen, two-player confirmation lobby, blocked early start, creator start, synchronization, reconnect, perspective, and gameplay. Gateway tests pass.
+Status: Audit complete. Confirmed code defects were fixed and automated checks pass. Publishing remains blocked by the inaccessible Render hostname, invalid website TLS certificate, and audited files being outside the intended Git repository.

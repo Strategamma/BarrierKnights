@@ -6,9 +6,9 @@ Mobile is first-class: the board stays square and visible, controls are touch-si
 
 Touch wall placement is preview-first: tap or drag to snap a ghost wall to the nearest grid boundary, then explicitly confirm or cancel. Desktop mouse placement remains hover-and-click. Mobile exposes Undo; in bot mode it reverses the completed human+bot round so control safely returns to Blue.
 
-The game is an offline-capable PWA and must remain Android-packageable from the same web code.
+The game is an offline-capable PWA with SVG plus 192/512px PNG install icons and a 180px Apple icon. It must remain Android-packageable from the same web code.
 
-Modes are Couch Siege (offline same device), Realm Link (nearby devices), and Clockwork Duel (offline bot). Realm Link's Render gateway groups discovery by forwarded address. Players explicitly choose Create or Join, confirm generated names and Blue/Gold colors in a lobby, then only the Blue creator can start. It relays authoritative snapshots; private seat tokens and state allow automatic reconnection for 15 minutes. Gateway restarts clear sessions. Each device puts its knight/controls below and rival above; Blue rotates only local rendering/input. `gateway/` and `render.yaml` deploy `barrier-knights-gateway.onrender.com`.
+Modes are Couch Siege (same device), Realm Link (nearby devices), and Clockwork Duel (bot). Realm Link groups discovery by forwarded address, lists generated identities with ⚔ Duel, and offers Create game when empty. Challenges start immediately with a fog reveal. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. `gateway/` and `render.yaml` deploy the service; verify its assigned hostname before release.
 
 In bot mode the human is Gold at row 8 and the Blue bot is at row 0. Each player stores a `goalRow`, used throughout pathfinding, win detection, bot evaluation, rendering, and diagnostics. Squire/Knight/Champion all use shared legality/pathfinding without hidden advantages.
 
