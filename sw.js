@@ -1,4 +1,4 @@
-const CACHE = 'barrier-knights-v30';
+const CACHE = 'barrier-knights-v31';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './assets/barrier-knights-logo.svg', './assets/app-icon.svg', './assets/app-icon-192.png', './assets/app-icon-512.png', './assets/apple-touch-icon.png'];
 
 self.addEventListener('install', event => {

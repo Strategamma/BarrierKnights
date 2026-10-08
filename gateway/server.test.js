@@ -19,9 +19,11 @@ test('hosts, discovers, joins, and relays a nearby hall', async () => {
   const host = await connect(), guest = await connect();
   host.send(JSON.stringify({ type: 'host', name: 'Ember Bastion', playerName: 'Azure Warden' }));
   const hosted = await next(host, 'hosting');
-  guest.send(JSON.stringify({ type: 'list' }));
+  guest.send(JSON.stringify({ type: 'list', playerName: 'Gilded Sentinel' }));
   const list = await next(guest, 'halls');
   assert.equal(list.halls[0].name, 'Ember Bastion');
+  assert.equal(list.presence.online, 2);
+  assert.ok(list.presence.names.includes('Azure Warden'));
   guest.send(JSON.stringify({ type: 'join', hallId: hosted.hall.id, playerName: 'Gilded Sentinel' }));
   await next(host, 'peer-joined');
   guest.send(JSON.stringify({ type: 'relay', payload: { kind: 'state', state: { turn: 1, marker: 'saved' } } }));

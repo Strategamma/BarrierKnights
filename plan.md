@@ -1,11 +1,11 @@
-Goal: Restore reliable desktop movement and wall placement on the published GitHub Pages build.
+Goal: Make every major navigation state clearer and modernize Nearby Wi-Fi discovery and lobby.
 
-Scope: Canvas activation input only, with regression coverage across movement, touch wall confirmation, bot play, and rotated Wi-Fi input.
+Scope: Mode picker, rules/help, Wi-Fi discovery, waiting lobby, card feedback, victory navigation, Decadence Inc links, and gateway presence metadata.
 
-Approach: Commit immediately on `pointerdown`, retain a deduplicated `click` fallback, and show feedback for invalid movement targets while retaining pointer movement for wall previews.
+Approach: Keep the existing single-page architecture; add clear back/next actions and helper text, a privacy-honest network status card, live Barrier Knights player presence, and lightweight reduced-motion-safe lobby animations.
 
-Risks: Touch click events must retain `pointerType` where available so the preview-and-confirm wall flow remains intact.
+Risks: Browsers cannot expose the Wi-Fi SSID or enumerate router devices. Show “Current network” and only players connected to the Barrier Knights gateway; keep network identity private and scoped by the gateway’s existing network key.
 
-Verification: Repeat client smoke tests for mouse movement, touch wall preview/confirm, scaled coordinates, bot response, and rotated Wi-Fi controls; run gateway regression tests and syntax checks.
+Verification: Run client smoke tests, gateway integration tests, syntax checks, and the web-game browser test path where the host permits it. Check narrow-screen and reduced-motion styles statically if browser launch remains blocked.
 
-Status: Complete. The live v28 build was confirmed current; v29 commits board actions on pointer-down with a tested click fallback and explicit invalid-target feedback. The verified Render gateway is connected in v30. Ten randomized client runs, gateway regressions, and syntax checks pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.
+Status: Complete. Client smoke tests, gateway integration tests, syntax checks, and diff checks pass. Browser screenshot QA is unavailable because this host has no Playwright Chromium executable.
