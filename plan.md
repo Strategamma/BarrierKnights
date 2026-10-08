@@ -1,11 +1,11 @@
-Goal: Make game setup language immediately understandable and stabilize card popups.
+Goal: Replace automatic nearby matchmaking with an explicit Create/Join lobby and creator-controlled start.
 
-Scope: Mode names, helper copy, nearby-game actions/status, difficulty labels, and card reveal positioning.
+Scope: Nearby entry choices, game browser, two-player identity/color confirmation, creator-only Start game, and lobby-safe reconnection.
 
-Approach: Use literal labels with one-line explanations, retain generated identities only where useful, and keep the card popup's centering transform throughout its animation.
+Approach: Separate connection from match start. Host and guest remain in a synchronized lobby until both are present and the Blue host explicitly starts; the first state snapshot transitions both devices into play.
 
-Risks: Animation keyframes can override the popup's base transform and cause visible jumping.
+Risks: Joining or reconnecting must never bypass the lobby, and only the creator may initiate the opening state.
 
-Verification: Run gameplay and gateway suites, assert the card animation ends with its centering transform, and retain Realm Link synchronization coverage.
+Verification: Test Create/Join choice, hosted lobby, both identity/color rows, creator-only start, no early board transition, state synchronization, and existing reconnect/gameplay coverage.
 
-Status: Complete. Gameplay, Realm Link, gateway, and card-centering assertions pass. Live visual inspection was unavailable because the ambient file tab was not exposed to browser automation.
+Status: Complete. Client smoke tests verify the choice screen, two-player confirmation lobby, blocked early start, creator start, synchronization, reconnect, perspective, and gameplay. Gateway tests pass.

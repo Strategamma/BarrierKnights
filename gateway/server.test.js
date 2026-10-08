@@ -18,9 +18,22 @@ test('hosts, discovers, joins, and relays a nearby hall', async () => {
   assert.equal(list.halls[0].name, 'Ember Bastion');
   guest.send(JSON.stringify({ type: 'join', hallId: hosted.hall.id, playerName: 'Gilded Sentinel' }));
   await next(host, 'peer-joined');
-  guest.send(JSON.stringify({ type: 'relay', payload: { kind: 'ready' } }));
-  assert.deepEqual((await next(host, 'relay')).payload, { kind: 'ready' });
-  host.close(); guest.close();
+  guest.send(JSON.stringify({ type: 'relay', payload: { kind: 'state', state: { turn: 1, marker: 'saved' } } }));
+  assert.equal((await next(host, 'relay')).payload.state.marker, 'saved');
+
+  const peerLeft = next(guest, 'peer-left');
+  host.close();
+  assert.equal((await peerLeft).canRejoin, true);
+
+  const replacement = await connect();
+  const rejoined = next(replacement, 'rejoined');
+  const restored = next(replacement, 'relay');
+  const peerRejoined = next(guest, 'peer-rejoined');
+  replacement.send(JSON.stringify({ type: 'rejoin', hallId: hosted.hall.id, token: hosted.rejoinToken }));
+  assert.equal((await rejoined).playerIndex, 0);
+  assert.equal((await restored).payload.state.marker, 'saved');
+  assert.equal((await peerRejoined).playerName, 'Azure Warden');
+  replacement.close(); guest.close();
 });
 
 test.after(() => new Promise(resolve => server.close(resolve)));
