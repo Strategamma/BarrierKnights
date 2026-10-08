@@ -24,6 +24,8 @@ Pre-publish audit in progress: fixed false disconnects during live-seat reconnec
 
 Pre-publish audit complete: expanded regression coverage for all card effects, victory, scaled input, route-block detection, malformed Wi-Fi snapshots, and all existing modes; client passed 10 randomized runs and gateway tests passed. Static asset/reference/syntax/MIME checks pass. External blockers: configured Render URL returns HTTP 404, decadenceinc.com has a mismatched GitHub Pages TLS certificate, and the audited folder is not the intended no-space GitHub Desktop repository.
 
+Desktop input fix: the published build matched local exactly, but committed canvas actions depended on raw `pointerup`, which can be lost on some desktop browser/input combinations. Movement and wall placement now commit through the standard `click` event; pointer movement remains responsible only for wall previews. Cache bumped to v28.
+
 Current state: Rules-design phase only; no game implementation exists yet. Confirmed constraints: each player wins by reaching the far end line (the opponent's starting row). Wall placements require pathfinding so each player retains a route to that goal; pawns cannot cross walls or leave the board; each wall consumes two wall sections; no row or column may contain more than four walls, preserving at least one open path.
 
 Card proposal captured: 5× Better Luck Next Time (no effect), +2 Moves (playing it consumes one action and grants two additional actions; stacks), +2 Walls (adds two wall sections to the player's inventory), and Break the Wall (select one placed wall to remove or skip). Need settle card pickup/discard behavior and exact deck counts before implementation.

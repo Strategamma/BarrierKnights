@@ -1,11 +1,11 @@
-Goal: Complete a pre-publish bug audit and fix confirmed release blockers.
+Goal: Restore reliable desktop movement and wall placement on the published GitHub Pages build.
 
-Scope: Core rules and controls, same-device/bot/Wi-Fi flows, reconnect and synchronization, responsive UI hooks, gateway validation, and PWA install/offline assets.
+Scope: Canvas activation input only, with regression coverage across movement, touch wall confirmation, bot play, and rotated Wi-Fi input.
 
-Approach: Inspect the full executable surface, expand deterministic regression coverage around weak paths, run repeated client/gateway tests and static validation, then fix only reproduced or clearly provable defects.
+Approach: Replace fragile raw `pointerup` activation with standard `click` activation while retaining pointer movement for desktop wall previews.
 
-Risks: Browser screenshot automation is restricted by the host; live Render discovery depends on deployment state; service-worker behavior differs on file URLs versus HTTPS.
+Risks: Touch click events must retain `pointerType` where available so the preview-and-confirm wall flow remains intact.
 
-Verification: Exercise movement, wall placement/path preservation, cards, pickups, undo, bot turns, victory, Wi-Fi perspectives/reconnect, malformed gateway input, manifest/icons/cache, asset serving, and syntax.
+Verification: Repeat client smoke tests for mouse movement, touch wall preview/confirm, scaled coordinates, bot response, and rotated Wi-Fi controls; run gateway regression tests and syntax checks.
 
-Status: Audit complete. Confirmed code defects were fixed and automated checks pass. Publishing remains blocked by the inaccessible Render hostname, invalid website TLS certificate, and audited files being outside the intended Git repository.
+Status: Complete. Published and local files were confirmed identical; standard click activation replaces raw pointer-up, cache is v28, and repeated client plus gateway regressions pass. Live screenshot automation remains blocked by the host's Chromium permission restriction.
