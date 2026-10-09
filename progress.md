@@ -36,3 +36,21 @@ TODO:
 - Strengthened Decadence gold/cyan hierarchy across setup, duel, create/start, wall confirmation, install, and rematch actions.
 - PWA cache bumped to v33.
 - Client smoke passed 3/3, gateway tests passed 3/3, and syntax/diff checks passed. Playwright still cannot launch because its Chromium executable is absent.
+
+2026-10-10 Decadence/lobby reliability update:
+- Restyled setup and lobby surfaces with Decadence Arcade's warm near-black, amber/crimson palette, bold headings, square controls, and offset-shadow interactions while preserving the blue/gold game board.
+- Added a short reduced-motion-safe Decadence → Barrier Knights handoff for decadenceinc.com referrals and `?from=decadence` links.
+- Hosts now receive a six-character lobby code; guests can enter it when auto-discovery is split by VPN, Private Relay, IPv4/IPv6, or proxy routing.
+- Rejoin remains protected by the private seat token and no longer fails solely because the routed address changed.
+- Client smoke passes, including code normalization/submission and host-code display. Gateway integration passes 4/4, including cross-address join and rejoin. Syntax and whitespace checks pass.
+- Browser QA remains blocked: Chromium installs but macOS denies its process registration; the in-app browser cannot access localhost because browser permission was declined.
+- TODO: redeploy the gateway before publishing the v34 client, because code joining requires both protocol sides.
+
+2026-10-10 named-player duel update:
+- Nearby Wi-Fi now asks for a player name once, saves it locally, and registers only after naming.
+- Available named players broadcast immediately inside the network group. Tapping Duel directly seats both clients and the Blue initiator automatically starts the synchronized match.
+- Added Change my name without exposing the generated-name or lobby-code flow.
+- Confirmed perspective rules in regression coverage: Blue rotates canvas and input; Gold remains canonical; each local player and controls stay below.
+- Added an audio-unlocked two-note chime when a remote action returns the turn to the local player; initial match entry and opponent turns stay silent.
+- PWA cache bumped to v35. Gateway redeployment is required before publishing this client.
+- Verification passes: client smoke covers saved naming, live discovery, one-tap challenge/start, exactly one returning-turn alert, Blue rotated input, Gold canonical input, and existing gameplay; gateway integration passes 5/5. Playwright remains blocked by macOS Mach-port permission denial.

@@ -8,7 +8,12 @@ const halls = new Map();
 const clean = value => String(value || '').replace(/[^a-zA-Z0-9 '\-]/g, '').trim().slice(0, 32);
 const send = (socket, message) => socket?.readyState === WebSocket.OPEN && socket.send(JSON.stringify(message));
 const networkKey = request => String(request.headers['x-forwarded-for'] || request.socket.remoteAddress || '').split(',')[0].trim();
-const publicHall = hall => ({ id: hall.id, name: hall.name, hostName: hall.players[0].name, guestName: hall.players[1]?.name || null });
+const publicHall = hall => ({ id: hall.id, code: hall.code, name: hall.name, hostName: hall.players[0].name, guestName: hall.players[1]?.name || null });
+const inviteCode = () => {
+  let code;
+  do code = crypto.randomUUID().replace(/-/g, '').slice(0, 6).toUpperCase(); while ([...halls.values()].some(hall => hall.code === code));
+  return code;
+};
 
 function cleanupExpired() {
   const now = Date.now();
@@ -28,7 +33,7 @@ const nearby = key => {
 };
 const networkPresence = key => {
   const matching = [...clients.values()].filter(client => client.network === key);
-  return { online: matching.length, names: [...new Set(matching.map(client => client.name).filter(Boolean))] };
+  return { online: matching.length, names: [...new Set(matching.map(client => client.name).filter(Boolean))], players: matching.filter(client => client.name && !client.hallId).map(client => ({ id: client.id, name: client.name })) };
 };
 const nearbyMessage = key => ({ type: 'halls', halls: nearby(key), presence: networkPresence(key) });
 
@@ -80,14 +85,30 @@ export function handleMessage(socket, raw) {
     leaveHallOnly(socket);
     const id = crypto.randomUUID().slice(0, 8), token = crypto.randomUUID();
     const host = { socket, token, name: clean(message.playerName) || 'Blue Knight' };
-    const hall = { id, name: clean(message.name) || 'Nearby Game', network: client.network, players: [host, null], state: null, expiresAt: null };
+    const hall = { id, code: inviteCode(), name: clean(message.name) || 'Nearby Game', network: client.network, players: [host, null], state: null, expiresAt: null };
     halls.set(id, hall); client.hallId = id; client.playerIndex = 0; client.name = host.name;
     send(socket, { type: 'hosting', hall: publicHall(hall), playerIndex: 0, rejoinToken: token });
     return broadcastNearby(client.network);
   }
+  if (message.type === 'challenge') {
+    if (client.hallId) return send(socket, { type: 'error', code: 'already-playing', message: 'Leave your current lobby before challenging another player.' });
+    const targetEntry = [...clients.entries()].find(([, candidate]) => candidate.id === String(message.playerId || '') && candidate.network === client.network && candidate.name && !candidate.hallId);
+    if (!targetEntry || targetEntry[0] === socket) return send(socket, { type: 'error', code: 'player-unavailable', message: 'That player is no longer available.' });
+    const [targetSocket, target] = targetEntry, id = crypto.randomUUID().slice(0, 8);
+    const host = { socket, token: crypto.randomUUID(), name: client.name || 'Blue Knight' };
+    const guest = { socket: targetSocket, token: crypto.randomUUID(), name: target.name || 'Gold Knight' };
+    const hall = { id, code: inviteCode(), name: 'Nearby Duel', network: client.network, players: [host, guest], state: null, expiresAt: null };
+    halls.set(id, hall);client.hallId=id;client.playerIndex=0;target.hallId=id;target.playerIndex=1;
+    send(socket, { type: 'hosting', hall: publicHall(hall), playerIndex: 0, rejoinToken: host.token });
+    send(targetSocket, { type: 'joined', hall: publicHall(hall), playerIndex: 1, rejoinToken: guest.token });
+    send(socket, { type: 'peer-joined', guestName: guest.name });
+    return broadcastNearby(client.network);
+  }
   if (message.type === 'join') {
-    const hall = halls.get(String(message.hallId || ''));
-    if (!hall || hall.network !== client.network || hall.players[1] || !hall.players[0].socket) return send(socket, { type: 'error', code: 'hall-unavailable', message: 'That game is no longer available.' });
+    const requestedCode = String(message.code || '').replace(/[^a-z0-9]/gi, '').toUpperCase();
+    const hall = message.hallId ? halls.get(String(message.hallId)) : [...halls.values()].find(candidate => candidate.code === requestedCode);
+    const hasInvite = Boolean(requestedCode && hall?.code === requestedCode);
+    if (!hall || (!hasInvite && hall.network !== client.network) || hall.players[1] || !hall.players[0].socket) return send(socket, { type: 'error', code: 'hall-unavailable', message: 'That game is no longer available. Check the code and try again.' });
     leaveHallOnly(socket);
     const token = crypto.randomUUID(), guest = { socket, token, name: clean(message.playerName) || 'Gold Knight' };
     hall.players[1] = guest; hall.expiresAt = null; client.hallId = hall.id; client.playerIndex = 1; client.name = guest.name;
@@ -98,7 +119,7 @@ export function handleMessage(socket, raw) {
   if (message.type === 'rejoin') {
     const hall = halls.get(String(message.hallId || ''));
     const playerIndex = hall?.players.findIndex(player => player?.token === message.token) ?? -1;
-    if (!hall || hall.network !== client.network || playerIndex < 0) return send(socket, { type: 'error', code: 'rejoin-expired', message: 'The saved game has expired.' });
+    if (!hall || playerIndex < 0) return send(socket, { type: 'error', code: 'rejoin-expired', message: 'The saved game has expired.' });
     leaveHallOnly(socket);
     const player = hall.players[playerIndex];
     if (player.socket && player.socket !== socket) player.socket.close(4000, 'Rejoined from another connection');
@@ -130,8 +151,8 @@ const server = createServer((request, response) => {
 });
 const wss = new WebSocketServer({ server, maxPayload: 262144 });
 wss.on('connection', (socket, request) => {
-  clients.set(socket, { network: networkKey(request), hallId: null, playerIndex: null, name: null });
-  send(socket, { type: 'welcome', rejoinMinutes: REJOIN_TTL_MS / 60000 });
+  clients.set(socket, { id: crypto.randomUUID(), network: networkKey(request), hallId: null, playerIndex: null, name: null });
+  send(socket, { type: 'welcome', clientId: clients.get(socket).id, rejoinMinutes: REJOIN_TTL_MS / 60000 });
   socket.on('message', raw => handleMessage(socket, raw.toString()));
   socket.on('close', () => leave(socket));
   socket.on('error', () => leave(socket));

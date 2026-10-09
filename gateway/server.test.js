@@ -6,7 +6,7 @@ process.env.NODE_ENV = 'test';
 const { server } = await import('./server.js');
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const url = `ws://127.0.0.1:${server.address().port}`;
-const connect = () => new Promise(resolve => { const ws = new WebSocket(url); ws.once('open', () => resolve(ws)); });
+const connect = (address = '') => new Promise(resolve => { const ws = new WebSocket(url, address ? { headers: { 'x-forwarded-for': address } } : undefined); ws.once('open', () => resolve(ws)); });
 const next = (ws, type) => new Promise(resolve => { const listener = raw => { const value = JSON.parse(raw); if (value.type === type) { ws.off('message', listener); resolve(value); } }; ws.on('message', listener); });
 const noMessage = (ws, type, delay = 60) => new Promise((resolve, reject) => {
   const listener = raw => { const value = JSON.parse(raw); if (value.type === type) { cleanup(); reject(new Error(`Unexpected ${type} message`)); } };
@@ -58,6 +58,43 @@ test('rejoining over a live seat does not emit a false disconnect', async () => 
   await noMessage(guest, 'peer-left');
 
   replacement.close(); guest.close();
+});
+
+test('lists named available players and creates a duel with one challenge', async () => {
+  const blue = await connect('192.0.2.10'), gold = await connect('192.0.2.10');
+  blue.send(JSON.stringify({ type: 'list', playerName: 'Farzan' }));
+  await next(blue, 'halls');
+  gold.send(JSON.stringify({ type: 'list', playerName: 'Mira' }));
+  const presence = await next(blue, 'halls');
+  assert.deepEqual(new Set(presence.presence.players.map(player => player.name)), new Set(['Farzan', 'Mira']));
+  const goldPlayer = presence.presence.players.find(player => player.name === 'Mira');
+  assert.ok(goldPlayer?.id);
+
+  const hosting = next(blue, 'hosting'), joined = next(gold, 'joined'), peerJoined = next(blue, 'peer-joined');
+  blue.send(JSON.stringify({ type: 'challenge', playerId: goldPlayer.id }));
+  assert.equal((await hosting).hall.guestName, 'Mira');
+  assert.equal((await joined).playerIndex, 1);
+  assert.equal((await peerJoined).guestName, 'Mira');
+  blue.close(); gold.close();
+});
+
+test('invite code connects and restores players when proxy addresses differ', async () => {
+  const host = await connect('198.51.100.10'), guest = await connect('2001:db8::20');
+  host.send(JSON.stringify({ type: 'host', name: 'Split Network Keep', playerName: 'Azure Warden' }));
+  const hosted = await next(host, 'hosting');
+  assert.match(hosted.hall.code, /^[A-F0-9]{6}$/);
+
+  guest.send(JSON.stringify({ type: 'list', playerName: 'Golden Paladin' }));
+  assert.equal((await next(guest, 'halls')).halls.length, 0);
+  guest.send(JSON.stringify({ type: 'join', code: hosted.hall.code.toLowerCase(), playerName: 'Golden Paladin' }));
+  const joined = await next(guest, 'joined');
+  assert.equal(joined.hall.id, hosted.hall.id);
+  await next(host, 'peer-joined');
+
+  const replacement = await connect('203.0.113.44');
+  replacement.send(JSON.stringify({ type: 'rejoin', hallId: hosted.hall.id, token: joined.rejoinToken }));
+  assert.equal((await next(replacement, 'rejoined')).playerIndex, 1);
+  replacement.close(); host.close(); guest.close();
 });
 
 test('rejects valid JSON values that are not protocol messages', async () => {

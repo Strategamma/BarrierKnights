@@ -13,7 +13,7 @@ function element(extra = {}) {
 const ctx = new Proxy({}, { get: (target, key) => target[key] || (() => {}) });
 let canvasRect = { left: 0, top: 0, width: 648, height: 648 };
 const canvas = element({ width: 648, height: 648, getContext: () => ctx, getBoundingClientRect: () => canvasRect });
-const ids = Object.fromEntries(['game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp'].map(id => [id, element()]));
+const ids = Object.fromEntries(['game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp','arcadeHandoff','playerNameForm','playerName','savePlayerName'].map(id => [id, element()]));
 const moveButtons = [element({ dataset: { action: 'move' } }), element({ dataset: { action: 'move' } })];
 const wallButtons = [element({ dataset: { action: 'wall' } }), element({ dataset: { action: 'wall' } })];
 const cardButtons = [element({ dataset: { action: 'card' } }), element({ dataset: { action: 'card' } })];
@@ -26,7 +26,7 @@ const groups = {
   '[data-walls="0"]': [element(), element()], '[data-walls="1"]': [element(), element(), element()],
   '[data-deck-count]': [element(), element(), element(), element()], '[data-actions-label]': [element(), element()],
 };
-const aliases = { '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element() };
+const aliases = { '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element(), '.lobby-players': element() };
 const document = {
   body: element(), documentElement: element({ requestFullscreen() {} }), fullscreenElement: null,
   querySelector(q) { return q.startsWith('#') ? ids[q.slice(1)] || aliases[q] : aliases[q] || element(); },
@@ -34,7 +34,7 @@ const document = {
 };
 const html = fs.readFileSync('index.html', 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
-const instrumentedScript = script.replace(/\}\)\(\);\s*$/, 'window.__botTest={getState:()=>state,chooseBotDecision,drawCard,legalWall,hasPath,validRealmState,render};})();');
+const instrumentedScript = script.replace(/\}\)\(\);\s*$/, 'window.__botTest={getState:()=>state,chooseBotDecision,drawCard,legalWall,hasPath,validRealmState,render,setRealmPlayerIndex:value=>{realmPlayerIndex=value}};})();');
 class FakeWebSocket {
   static instances = [];
   constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeWebSocket.instances.push(this); }
@@ -43,7 +43,8 @@ class FakeWebSocket {
 }
 const stored = new Map();
 const localStorage = { getItem: key => stored.get(key) || null, setItem: (key, value) => stored.set(key, value), removeItem: key => stored.delete(key) };
-const sandbox = { document, navigator: {}, console, Math, JSON, WebSocket: FakeWebSocket, localStorage, clearTimeout() {}, addEventListener() {}, setTimeout: fn => { fn(); return 1; } };
+class FakeAudioContext { constructor() { this.currentTime = 0; this.destination = {}; } createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {} }; } createOscillator() { return { frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, start() {}, stop() {} }; } }
+const sandbox = { document, navigator: {}, console, Math, JSON, WebSocket: FakeWebSocket, AudioContext: FakeAudioContext, localStorage, clearTimeout() {}, addEventListener() {}, setTimeout: fn => { fn(); return 1; } };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(instrumentedScript, sandbox);
@@ -202,31 +203,30 @@ decision = sandbox.__botTest.chooseBotDecision();
 if (decision.type !== 'wall' || decision.reason !== 'blocking an imminent Gold win') throw new Error('Champion did not block an imminent loss');
 
 ids.wifiMode.onclick();
-if (ids.realmPanel.hidden || ids.realmBrowser.hidden) throw new Error('Nearby Wi-Fi did not open the current network games list');
+if (ids.realmPanel.hidden || ids.realmChoices.hidden) throw new Error('Nearby Wi-Fi did not request a player name before discovery');
+ids.playerName.value = 'Farzan';
+ids.playerName.oninput();
+ids.playerNameForm.onsubmit({ preventDefault() {} });
+if (stored.get('barrierKnightsPlayerName') !== 'Farzan' || ids.realmBrowser.hidden) throw new Error('Player name was not saved before discovery');
 let socket = FakeWebSocket.instances.at(-1);
 socket.onopen();
 if (socket.sent.at(-1).type !== 'list' || !socket.sent.at(-1).playerName) throw new Error('Nearby Wi-Fi did not request the current games list with its identity');
-socket.onmessage({ data: JSON.stringify({ type: 'halls', halls: [{ id: 'other-hall', name: 'Moonlit Keep', hostName: 'Azure Warden' }], presence: { online: 2, names: ['Azure Warden', 'Golden Paladin'] } }) });
-if (ids.networkCount.textContent !== '2 players online' || !ids.networkPeople.textContent.includes('Azure Warden')) throw new Error('Nearby Wi-Fi did not show same-network player presence');
+socket.onmessage({ data: JSON.stringify({ type: 'welcome', clientId: 'self-player' }) });
+socket.onmessage({ data: JSON.stringify({ type: 'halls', halls: [], presence: { online: 2, names: ['Farzan', 'Mira'], players: [{ id: 'self-player', name: 'Farzan' }, { id: 'mira-player', name: 'Mira' }] } }) });
+if (ids.networkCount.textContent !== '2 players online' || ids.networkPeople.textContent !== '1 ready to duel') throw new Error('Nearby Wi-Fi did not show available named players');
 const duelButton = ids.hallList.children.at(-1).children.at(-1);
 if (duelButton.textContent !== '⚔ Duel' || duelButton.disabled) throw new Error('Online player did not show an active Duel action');
-socket.onmessage({ data: JSON.stringify({ type: 'halls', halls: [] }) });
-if (ids.createEmptyRealm.hidden) throw new Error('Empty network did not offer Create game');
-ids.createEmptyRealm.onclick();
-socket = FakeWebSocket.instances.at(-1);
-socket.onopen();
-if (socket.sent.at(-1).type !== 'host') throw new Error('Create game did not advertise the assigned player name');
-socket.onmessage({ data: JSON.stringify({ type: 'hosting', hall: { id: 'hall-1', name: 'Ember Bastion' }, playerIndex: 0, rejoinToken: 'private-blue-token' }) });
-socket.onmessage({ data: JSON.stringify({ type: 'peer-joined', guestName: 'Gilded Sentinel' }) });
-if (ids.realmLobby.hidden || ids.startRealmGame.hidden || ids.lobbyGoldName.textContent !== 'Gilded Sentinel') throw new Error('Both players were not shown on the confirmation lobby');
-ids.startRealmGame.onclick();
+duelButton.onclick();
+if (socket.sent.at(-1).type !== 'challenge' || socket.sent.at(-1).playerId !== 'mira-player') throw new Error('Duel did not challenge the selected named player');
+socket.onmessage({ data: JSON.stringify({ type: 'hosting', hall: { id: 'hall-1', name: 'Nearby Duel', guestName: 'Mira' }, playerIndex: 0, rejoinToken: 'private-blue-token' }) });
+socket.onmessage({ data: JSON.stringify({ type: 'peer-joined', guestName: 'Mira' }) });
 state = JSON.parse(sandbox.window.render_game_to_text());
-if (state.gameMode !== 'wifi' || state.realmPlayerIndex !== 0 || state.players[1].name !== 'Gilded Sentinel' || socket.sent.at(-1).payload?.kind !== 'state') throw new Error('Realm Link host did not begin and synchronize a Wi-Fi match');
-if (ids.fogMatchup.textContent !== `${state.players[0].name} vs Gilded Sentinel`) throw new Error('Fog-clearing duel intro did not show both player names');
-if (!document.body.classList.contains('realm-blue') || ids.rivalName.textContent !== 'Rival · Gilded Sentinel') throw new Error('Realm Link did not label and orient the Blue host perspective');
+if (state.gameMode !== 'wifi' || state.realmPlayerIndex !== 0 || state.players[1].name !== 'Mira' || socket.sent.at(-1).payload?.kind !== 'state') throw new Error('One-tap duel did not begin and synchronize a Wi-Fi match');
+if (ids.fogMatchup.textContent !== `${state.players[0].name} vs Mira`) throw new Error('Fog-clearing duel intro did not show both player names');
+if (!document.body.classList.contains('realm-blue') || state.perspective !== 'blue-rotated-local-bottom' || ids.rivalName.textContent !== 'Rival · Mira') throw new Error('Blue host perspective was not rotated local-player-first');
 canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
-if (state.players[0].position.y !== 1 || state.turn !== 'Gilded Sentinel') throw new Error('Rotated Blue perspective did not map bottom-side input to the canonical board');
+if (state.players[0].position.y !== 1 || state.turn !== 'Mira') throw new Error('Rotated Blue perspective did not map bottom-side input to the canonical board');
 const liveWifiState = sandbox.__botTest.getState();
 liveWifiState.turn = 0;
 cardButtons[0].onclick();
@@ -238,14 +238,19 @@ if (!moveButtons.every(button => button.disabled)) throw new Error('Realm Link d
 remote.lastCard = 'walls';
 remote.lastCardFree = false;
 remote.cardEvent = (remote.cardEvent || 0) + 1;
-remote.history.unshift('Gilded Sentinel drew +2 Walls.');
+remote.history.unshift('Mira drew +2 Walls.');
 socket.onmessage({ data: JSON.stringify({ type: 'relay', payload: { kind: 'state', state: remote } }) });
 if (ids.cardName.textContent !== '+2 Walls' || !ids.cardText.textContent.includes('walls')) throw new Error('Opponent card draw did not display on the local device');
-if (!ids.sharedHistoryContent.children.some(row => row.textContent === 'Gilded Sentinel drew +2 Walls.')) throw new Error('Wi-Fi move history did not show the opponent action');
-remote.winner = 1;
-remote.history.unshift('Gilded Sentinel wins.');
+if (!ids.sharedHistoryContent.children.some(row => row.textContent === 'Mira drew +2 Walls.')) throw new Error('Wi-Fi move history did not show the opponent action');
+remote.turn = 0;
 socket.onmessage({ data: JSON.stringify({ type: 'relay', payload: { kind: 'state', state: remote } }) });
-if (!ids.victory.classList.contains('show') || ids.winner.textContent !== 'Gilded Sentinel wins!' || ids.again.textContent !== 'Request rematch') throw new Error('Remote victory did not show the victory and rematch UI');
+state = JSON.parse(sandbox.window.render_game_to_text());
+if (state.turnAlerts !== 1 || state.turn !== 'Farzan') throw new Error('Returning control to the local player did not sound one turn alert');
+remote.turn = 1;
+remote.winner = 1;
+remote.history.unshift('Mira wins.');
+socket.onmessage({ data: JSON.stringify({ type: 'relay', payload: { kind: 'state', state: remote } }) });
+if (!ids.victory.classList.contains('show') || ids.winner.textContent !== 'Mira wins!' || ids.again.textContent !== 'Request rematch') throw new Error('Remote victory did not show the victory and rematch UI');
 ids.again.onclick();
 if (socket.sent.at(-1).payload?.kind !== 'rematch-request' || !ids.again.disabled) throw new Error('Rematch request was not relayed or locked while waiting');
 socket.onmessage({ data: JSON.stringify({ type: 'relay', payload: { kind: 'rematch-request' } }) });
@@ -263,4 +268,13 @@ reconnectingSocket.onmessage({ data: JSON.stringify({ type: 'relay', payload: { 
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'wifi' || state.realmPlayerIndex !== 0 || !document.body.classList.contains('realm-blue')) throw new Error('Realm Link did not restore the saved player seat and board state');
 
-console.log('Smoke test passed: pickups/effects/undo, touch walls, shared-square movement, bot response, bot-round undo, and Realm Link synchronization');
+const goldState = sandbox.__botTest.getState();
+goldState.winner = null; goldState.turn = 1; goldState.mode = 'move'; goldState.pendingBreak = false; goldState.walls = []; goldState.players[0].position = { x: 4, y: 0 }; goldState.players[1].position = { x: 4, y: 8 };
+sandbox.__botTest.setRealmPlayerIndex(1); sandbox.__botTest.render();
+state = JSON.parse(sandbox.window.render_game_to_text());
+if (!document.body.classList.contains('realm-gold') || document.body.classList.contains('realm-blue') || state.perspective !== 'gold-local-bottom') throw new Error('Gold guest perspective did not remain local-player-first');
+canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
+state = JSON.parse(sandbox.window.render_game_to_text());
+if (state.players[1].position.y !== 7) throw new Error('Gold local-bottom perspective did not map board input correctly');
+
+console.log('Smoke test passed: name/discovery/challenge, turn alert, both Wi-Fi perspectives, gameplay, bot response, and synchronization');

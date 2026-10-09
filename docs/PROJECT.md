@@ -8,7 +8,7 @@ Touch wall placement is preview-first: tap or drag to snap a ghost wall, then co
 
 The game is an offline-capable PWA with SVG plus 192/512px PNG install icons and a 180px Apple icon. It must remain Android-packageable from the same web code.
 
-Modes are same screen, Nearby Wi-Fi, and bot. Wi-Fi discovery groups by forwarded address and reports only connected Barrier Knights clients; browsers cannot expose the SSID/router device list. Generated identities appear with ⚔ Duel. Both names/colors are confirmed before the host starts and fog clears. Card events, history, victory presentation, and mutually accepted rematches synchronize between peers. Private seat tokens/state allow 15-minute reconnection; gateway restarts clear sessions. Rejoin replacement must ignore the closing stale socket, and expiry must release/notify the survivor. Each device puts its knight/controls below and rival above; Blue rotates rendering/input. Gateway: `wss://barrierknights.onrender.com`.
+Modes are same screen, Nearby Wi-Fi, and bot. Wi-Fi asks for a saved name, then shows available named clients grouped by forwarded address; one-tap Duel seats both players and starts automatically. Browsers cannot expose the SSID/device list. Private seat tokens authorize 15-minute reconnection across address changes. Turns, cards, history, victory, and rematches synchronize. Each device puts itself below: Blue rotates rendering/input; Gold stays canonical. Returning local turns chime after audio unlock. Gateway: `wss://barrierknights.onrender.com`.
 
 In bot mode the human is Gold at row 8 and the Blue bot is at row 0. Each player stores a `goalRow`, used throughout pathfinding, win detection, bot evaluation, rendering, and diagnostics. Squire/Knight/Champion all use shared legality/pathfinding without hidden advantages.
 
@@ -16,7 +16,7 @@ Two pickups stay active in the central five rows, excluding starting column 4. L
 
 Pawns may move onto the same square but may not jump over one another. When stacked, both pawns remain visibly offset within the square.
 
-Branding uses cached `assets/barrier-knights-logo.svg`, a text fallback, and navigation to Decadence Inc.
+Branding uses cached `assets/barrier-knights-logo.svg`, a text fallback, and navigation to Decadence Inc. Setup adapts Decadence's warm amber/crimson, offset-shadow controls; referred or `?from=decadence` visits get a reduced-motion-safe branded handoff.
 
 Presentation uses cyan Move, amber Wall, violet Card, and gold primary controls. Effects are code-native: requestAnimationFrame handles pawn/canvas motion; CSS handles action, card, setup, victory, and confetti transitions. `prefers-reduced-motion` suppresses decoration. Logical state remains authoritative.
 
