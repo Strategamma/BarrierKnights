@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Move action example</title><desc id="desc">A blue knight at the bottom of a nine by nine board with three reachable squares highlighted.</desc>
+  <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#284773"/><rect width="40" height="40" fill="#315783" opacity=".55"/><path d="M40 0H0V40" fill="none" stroke="#86a6d0" stroke-opacity=".24"/></pattern><filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="720" height="420" rx="24" fill="#0d1528"/><rect x="30" y="30" width="360" height="360" rx="12" fill="url(#grid)"/>
+  <path d="M50 374H370" stroke="#ffe066" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+  <g fill="none" stroke="#7ac2ff" stroke-width="5" filter="url(#glow)"><rect x="150" y="310" width="40" height="40"/><rect x="190" y="270" width="40" height="40"/><rect x="230" y="310" width="40" height="40"/></g>
+  <circle cx="210" cy="370" r="15" fill="#7ac2ff" stroke="#101a32" stroke-width="4" filter="url(#glow)"/>
+  <text x="430" y="105" fill="#ffb84d" font-family="system-ui" font-size="18" font-weight="800" letter-spacing="3">MOVE</text><text x="430" y="155" fill="#fff7ec" font-family="system-ui" font-size="30" font-weight="800">Choose a glowing</text><text x="430" y="192" fill="#fff7ec" font-family="system-ui" font-size="30" font-weight="800">nearby square.</text><text x="430" y="250" fill="#cbd6ea" font-family="system-ui" font-size="18">Reach the opposite glowing</text><text x="430" y="278" fill="#cbd6ea" font-family="system-ui" font-size="18">edge before your rival.</text>
+</svg>

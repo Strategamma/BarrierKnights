@@ -1,11 +1,11 @@
-Goal: Make Nearby Wi-Fi feel immediate: named players appear quickly, one tap starts a duel, both perspectives remain local-player-first, and turns produce an audible alert.
+Goal: Make the mode picker and nested popups return safely to the exact UI state that opened them.
 
-Scope: Saved player-name entry, live available-player discovery, direct challenges, automatic match start, turn sound, perspective behavior, and protocol/tests.
+Scope: Modes opened from gameplay or victory, active Wi-Fi/session preservation, bot scheduling, contextual return labels, and regression tests.
 
-Approach: Register a chosen name once per device, broadcast available named clients within the network group, let either player challenge another directly, begin when both seats connect, and use a short Web Audio chime only when control returns to the local player.
+Approach: Treat mode selection as a reversible overlay, defer session teardown until a replacement mode is chosen, remember the caller, and restore gameplay or victory with a contextual return control.
 
-Risks: Simultaneous challenges must not double-seat clients, audio must wait for user interaction, names must be sanitized, and Blue/Gold board transforms must keep visuals and pointer mapping aligned.
+Risks: Returning must not clear state, disconnect Wi-Fi, lose a bot turn, dismiss victory permanently, or expose a meaningless back action on initial launch.
 
-Verification: Client smoke coverage for name persistence, challenge/start, turn alert, and both perspectives; gateway challenge/race tests; syntax/diff checks; Playwright screenshots if the host permits browser startup.
+Verification: Client smoke coverage for gameplay and victory callers, state preservation, initial-launch behavior, Wi-Fi/bot regressions, gateway tests, syntax/diff checks, and browser review when available.
 
-Status: Complete. Client smoke and five gateway integration tests pass; syntax/diff checks pass. Screenshot QA remains blocked by macOS denying Chromium process registration.
+Status: Complete. Client smoke verifies caller labels, local state preservation, victory restoration, and Wi-Fi socket survival; five gateway tests and syntax/diff checks pass.

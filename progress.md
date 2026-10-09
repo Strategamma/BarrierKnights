@@ -54,3 +54,14 @@ TODO:
 - Added an audio-unlocked two-note chime when a remote action returns the turn to the local player; initial match entry and opponent turns stay silent.
 - PWA cache bumped to v35. Gateway redeployment is required before publishing this client.
 - Verification passes: client smoke covers saved naming, live discovery, one-tap challenge/start, exactly one returning-turn alert, Blue rotated input, Gold canonical input, and existing gameplay; gateway integration passes 5/5. Playwright remains blocked by macOS Mach-port permission denial.
+
+2026-10-10 contrast and visual guide update:
+- Audited every button family and added explicit high-contrast default, selected, disabled, focus, hover, pressed, danger, primary, and action states. Key text/background pairs measure 4.73:1–13.47:1.
+- Replaced inline How to Play expansion with a four-step responsive modal using Back/Next/Done, close, backdrop, and Escape behavior.
+- Added and cached three accessible board-state SVG screenshots explaining movement, wall placement, cards, and pickups. PWA cache is v36.
+- Client smoke covers guide opening/navigation/completion; gameplay/network smoke and gateway tests continue to pass. SVG XML, syntax, and diff checks pass.
+
+2026-10-10 caller-aware popup navigation:
+- Modes now remembers whether it was opened from gameplay or victory and shows the matching Back action; initial setup shows none.
+- Opening Modes no longer destroys state or disconnects Wi-Fi. Returning restores the exact game/victory surface and resumes bot scheduling when relevant; teardown happens only after choosing a replacement mode.
+- Wi-Fi regression coverage confirms the active socket survives open/return. Local state and victory restoration are also covered. PWA cache is v37.

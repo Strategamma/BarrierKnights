@@ -1,6 +1,6 @@
 # Barrier Knights
 
-Browser-only two-player 9×9 strategy game, built with HTML, CSS, and vanilla JavaScript on a canvas. Players begin with 10 complete walls and win by reaching the far end row. A wall spans two board edges; legal placement must leave both players a path to their goal. Cards are drawn as an action, activate immediately, cannot be held, and discarded cards do not reshuffle. The supplied blue/gold canvas UI is the visual baseline.
+Browser-only two-player 9×9 canvas strategy game using HTML, CSS, and vanilla JavaScript. Players begin with 10 walls and win by reaching the far row. A wall spans two edges; placement must preserve both paths. Cards activate immediately as an action, cannot be held, and do not reshuffle. Blue/gold is the visual baseline.
 
 Mobile is first-class: the board stays square and visible, controls are touch-sized, and wall placement cannot depend on hover. Pass-and-play controls sit on opposite sides; the far side rotates toward that player. +2 Moves consumes the draw action, then grants exactly two more actions.
 
@@ -18,7 +18,7 @@ Pawns may move onto the same square but may not jump over one another. When stac
 
 Branding uses cached `assets/barrier-knights-logo.svg`, a text fallback, and navigation to Decadence Inc. Setup adapts Decadence's warm amber/crimson, offset-shadow controls; referred or `?from=decadence` visits get a reduced-motion-safe branded handoff.
 
-Presentation uses cyan Move, amber Wall, violet Card, and gold primary controls. Effects are code-native: requestAnimationFrame handles pawn/canvas motion; CSS handles action, card, setup, victory, and confetti transitions. `prefers-reduced-motion` suppresses decoration. Logical state remains authoritative.
+Presentation uses cyan Move, amber Wall, violet Card, and gold primary controls. Button variants target WCAG AA with explicit focus/disabled states. How to Play is a four-step responsive visual modal. Overlays remember their caller; returning from Modes preserves the game, live connection, bot scheduling, or victory dialog. Effects are code-native and reduced-motion safe. Logical state remains authoritative.
 
 Mobile sizing uses a CSS `--viewport-height` refreshed from the Visual Viewport API so browser chrome, orientation changes, and zoom constrain the board without hiding controls.
 

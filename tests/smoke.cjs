@@ -13,20 +13,25 @@ function element(extra = {}) {
 const ctx = new Proxy({}, { get: (target, key) => target[key] || (() => {}) });
 let canvasRect = { left: 0, top: 0, width: 648, height: 648 };
 const canvas = element({ width: 648, height: 648, getContext: () => ctx, getBoundingClientRect: () => canvasRect });
-const ids = Object.fromEntries(['game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp','arcadeHandoff','playerNameForm','playerName','savePlayerName'].map(id => [id, element()]));
+const ids = Object.fromEntries(['game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp','arcadeHandoff','playerNameForm','playerName','savePlayerName','guideModal','guideStep','guideClose','guideBack','guideNext','guideProgress','modeReturn'].map(id => [id, element()]));
+ids.modeReturn.hidden = true;
 const moveButtons = [element({ dataset: { action: 'move' } }), element({ dataset: { action: 'move' } })];
 const wallButtons = [element({ dataset: { action: 'wall' } }), element({ dataset: { action: 'wall' } })];
 const cardButtons = [element({ dataset: { action: 'card' } }), element({ dataset: { action: 'card' } })];
 const difficultyButtons = ['squire','knight','champion'].map(difficulty => element({ dataset: { difficulty } }));
 const seats = [element({ dataset: { player: '0' } }), element({ dataset: { player: '1' } })];
+const guidePages = [0,1,2,3].map(guidePage => element({ dataset: { guidePage: String(guidePage) } }));
+const guideDots = [element(), element(), element(), element()];
 const groups = {
   '[data-action="move"]': moveButtons, '[data-action="wall"]': wallButtons, '[data-action="card"]': cardButtons,
   '[data-action]': [...moveButtons, ...wallButtons, ...cardButtons], '.mobile-seat': seats,
   '[data-difficulty]': difficultyButtons,
+  '[data-guide-page]': guidePages, '#guideProgress span': guideDots,
   '[data-walls="0"]': [element(), element()], '[data-walls="1"]': [element(), element(), element()],
   '[data-deck-count]': [element(), element(), element(), element()], '[data-actions-label]': [element(), element()],
 };
-const aliases = { '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element(), '.lobby-players': element() };
+const howToTrigger = element();
+const aliases = { '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element(), '.lobby-players': element(), '.mode-card-nav': element(), '.wifi-help': element(), '.how-to>summary': howToTrigger };
 const document = {
   body: element(), documentElement: element({ requestFullscreen() {} }), fullscreenElement: null,
   querySelector(q) { return q.startsWith('#') ? ids[q.slice(1)] || aliases[q] : aliases[q] || element(); },
@@ -50,9 +55,21 @@ vm.createContext(sandbox);
 vm.runInContext(instrumentedScript, sandbox);
 
 if (!moveButtons.every(button => button.children.some(child => child.textContent === 'Try me'))) throw new Error('First-time Move buttons did not receive the Try me helper');
+if (!ids.modeReturn.hidden) throw new Error('Initial setup incorrectly offered a return to a game that does not exist');
+howToTrigger.onclick({ preventDefault() {} });
+if (!ids.guideModal.classList.contains('show') || ids.guideStep.textContent !== '1 of 4' || !ids.guideBack.disabled) throw new Error('How to Play modal did not open on its first page');
+ids.guideNext.onclick(); ids.guideNext.onclick(); ids.guideNext.onclick();
+if (ids.guideStep.textContent !== '4 of 4' || ids.guideNext.textContent !== 'Done') throw new Error('How to Play modal did not navigate to its final page');
+ids.guideNext.onclick();
+if (ids.guideModal.classList.contains('show')) throw new Error('How to Play Done action did not close the modal');
 ids.localMode.onclick();
 let state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'local' || state.deckRemaining !== 13 || !ids.modePicker.hidden) throw new Error('Local game did not initialize from the mode picker');
+const stateBeforeModes = sandbox.window.render_game_to_text();
+ids.mobileNewGame.onclick();
+if (ids.modePicker.hidden || ids.modeReturn.hidden || ids.modeReturn.textContent !== '← Back to game') throw new Error('Modes opened from gameplay without a contextual return action');
+ids.modeReturn.onclick();
+if (!ids.modePicker.hidden || sandbox.window.render_game_to_text() !== stateBeforeModes) throw new Error('Returning from Modes did not preserve the active game');
 if (state.pickups.length !== 2 || state.pickups.some(p => p.y < 2 || p.y > 6 || p.x === 4)) throw new Error('Initial pickups spawned outside legal central cells');
 canvas.onclick({ clientX: 324, clientY: 108 });
 state = JSON.parse(sandbox.window.render_game_to_text());
@@ -129,6 +146,10 @@ winningState.players[0].position = { x: 4, y: 7 };
 canvas.onpointerdown({ clientX: 324, clientY: 612, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.winner !== 'Blue Knight' || !ids.victory.classList.contains('show')) throw new Error('Reaching the goal row did not declare and display the winner');
+ids.victoryModes.onclick();
+if (ids.modePicker.hidden || ids.modeReturn.textContent !== '← Back to victory' || ids.victory.classList.contains('show')) throw new Error('Modes opened from victory without preserving its caller');
+ids.modeReturn.onclick();
+if (!ids.modePicker.hidden || !ids.victory.classList.contains('show')) throw new Error('Returning from Modes did not restore the victory dialog');
 
 ids.localMode.onclick();
 const blockedState = sandbox.__botTest.getState();
@@ -224,6 +245,9 @@ state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'wifi' || state.realmPlayerIndex !== 0 || state.players[1].name !== 'Mira' || socket.sent.at(-1).payload?.kind !== 'state') throw new Error('One-tap duel did not begin and synchronize a Wi-Fi match');
 if (ids.fogMatchup.textContent !== `${state.players[0].name} vs Mira`) throw new Error('Fog-clearing duel intro did not show both player names');
 if (!document.body.classList.contains('realm-blue') || state.perspective !== 'blue-rotated-local-bottom' || ids.rivalName.textContent !== 'Rival · Mira') throw new Error('Blue host perspective was not rotated local-player-first');
+const liveSocket = socket;
+ids.mobileNewGame.onclick(); ids.modeReturn.onclick();
+if (FakeWebSocket.instances.at(-1) !== liveSocket || liveSocket.readyState !== 1) throw new Error('Returning from Modes disconnected the active Wi-Fi match');
 canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.players[0].position.y !== 1 || state.turn !== 'Mira') throw new Error('Rotated Blue perspective did not map bottom-side input to the canonical board');
