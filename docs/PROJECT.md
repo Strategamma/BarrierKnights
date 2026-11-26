@@ -8,7 +8,7 @@ Mobile controls are touch-sized; the square board stays visible and walls never 
 
 Touch walls: tap/drag a preview, then confirm/cancel. Board actions commit on `pointerdown`, with deduplicated `click` fallback; pointer movement only previews. Header: Back, Undo, scrollable History popup. Install stays home. Bot undo restores the round. The inline Try me hint stays inside Move; first action dismisses it.
 
-Offline-capable PWA; homepage Install offers native prompt or browser instructions.
+Offline-capable PWA: matte emblem icons cover Android/Apple; homepage Install offers prompts/instructions.
 
 Modes: same screen, Play Online (default home), bot (difficulty shown after selection). Incoming player cards use crimson fill and accept by card or button; actions span the card width. Opening name popup precedes the hall; a header pencil opens Save/Cancel. Empty hall invites friends via native share, clipboard, or manual link copy. Global presence starts after name entry; Refresh/resume recheck availability. Always apply reconnect snapshots; distinguish offline/incompatible servers from empty halls. Server-owned 60-second invitations support concurrent challenges and atomic seating. Private guest tokens restore identity; seat tokens permit 15-minute match recovery while gateway memory survives. Heartbeats detect disconnects. Cards use 4/3/2 desktop/tablet/phone columns. Blue rotates rendering/input; Gold stays canonical. Match state synchronizes. Gateway: `wss://barrierknights.onrender.com`. Restarts erase sessions; persistent recovery is not implemented.
 

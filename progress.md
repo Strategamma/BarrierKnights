@@ -77,3 +77,7 @@ TODO:
 2026-11-26 follow-up:
 - Added transparent separation between emblem/wordmark and centered toolbar artwork with balanced vertical space. Spaced asset has a distinct URL; cache v55.
 - finish() now replaces stale action instructions with the completed action. Smoke regression covers both breaking and skipping; five viewport checks verify logo centering and post-skip feedback.
+
+2026-11-26 PWA branding:
+- Matte emblem icons now cover 192/512px manifest entries, shortcut, 180px Apple touch icon and 32px favicon. Distinct asset URLs remove the legacy SVG from active icon selection; cache v56.
+- Verified PNG dimensions, opaque RGB, manifest/link targets, and HTTP 200 for every precached asset; inspected 192px export. No deployment or installed-device validation.
