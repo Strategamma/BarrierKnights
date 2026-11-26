@@ -1,7 +1,7 @@
-Goal: Reliable multiplayer presence after disconnect and mobile resume.
-Scope: Always apply valid discovery snapshots, refresh on resume, distinguish connection/server errors from an empty hall.
-Approach: Remove stale snapshot deduplication; refresh identity/availability without interrupting live matches; validate discovery response shape.
-Risks: Keep occupied players unavailable and preserve seat recovery.
-Verification: Reproduce identical snapshot after disconnect; test legacy server response, resume events, refresh and game recovery; probe live gateway.
+Goal: Fix same-screen player-facing controls, safe Back navigation, help visibility and action hints; introduce a matte 3D logo.
+Scope: Existing static game UI and branding only; preserve game rules and online protocol.
+Approach: Place touch decisions inside the active player's seat; retain the drawing player's card orientation after turns change; share Back confirmation; expose the existing guide from gameplay; contain the hint within buttons; integrate a transparent generated logo.
+Risks: Short portrait/landscape screens, bot/online orientation, immediate card turn changes, cached PWA assets.
+Verification: Client smoke suite, browser interactions and responsive screenshots, JavaScript syntax, asset/cache checks.
 
-Status: Fixed and verified in preview and connected BarrierKnights checkouts. Client regression covers identical reconnect snapshots, offline/legacy-server feedback, resumed discovery, and active-match availability. Eight gateway tests pass, including cross-address discovery. Live probe still returns the older presence-only protocol; published gateway source groups clients by forwarded IP. Frontend and gateway publication are pending.
+Status: Implemented. Client smoke and five responsive browser sizes pass; screenshots reviewed. Local preview only; no deployment.

@@ -8,7 +8,7 @@ Navigation uses plain action labels, persistent back routes, short helper copy, 
 
 Wi-Fi matches give both players equal feedback: card reveals appear over either board, an expandable move history remains available on mobile and desktop, and victory/confetti is derived from synchronized state. Rematches require both players to agree; the host then creates and broadcasts a fresh board while preserving identities.
 
-Core actions use a learnable color language: cyan Move with a knight icon, amber Wall with a barrier icon, and violet Card with a spark icon. First-time players see a bouncing “Try me” cue on Move until they interact; the preference persists. Card reveals inherit semantic colors (neutral slate, movement cyan, wall amber, break crimson). Decisive actions use Decadence gold, while secondary/back/destructive actions stay visually quieter or red.
+Core actions use a learnable color language: cyan Move with a knight icon, amber Wall with a barrier icon, and violet Card with a spark icon. First-time players see an inline “Try me” cue on Move until they interact; the preference persists. Same-screen decisions inherit the active seat orientation; card reveals retain their drawing player’s orientation. Card reveals inherit semantic colors (neutral slate, movement cyan, wall amber, break crimson). Decisive actions use Decadence gold, while secondary/back/destructive actions stay visually quieter or red.
 
 Entry/setup surfaces bridge from Decadence Arcade's warm near-black, amber, and crimson palette into Barrier Knights' blue/gold board. They use square tactile controls with offset shadows and bold condensed headings. Visits referred by Decadence (or `?from=decadence`) receive a short branded handoff, with reduced-motion support.
 

@@ -6,14 +6,14 @@ function element(extra = {}) {
   return Object.assign({
     textContent: '', innerHTML: '', hidden: false, disabled: false, dataset: {}, style: { setProperty(name, value) { this[name] = value; } },
     classList: { add: x => classes.add(x), remove: x => classes.delete(x), contains: x => classes.has(x), toggle: (x, on) => on ? classes.add(x) : classes.delete(x) },
-    children: [], append(...children) { this.children.push(...children); }, appendChild(child) { this.children.push(child); },
+    children: [], append(...children) { for(const child of children){if(child.parentElement)child.parentElement.children=child.parentElement.children.filter(item=>item!==child);child.parentElement=this;this.children.push(child);} }, appendChild(child) { this.children.push(child); },
   }, extra);
 }
 
 const ctx = new Proxy({}, { get: (target, key) => target[key] || (() => {}) });
 let canvasRect = { left: 0, top: 0, width: 648, height: 648 };
 const canvas = element({ width: 648, height: 648, getContext: () => ctx, getBoundingClientRect: () => canvasRect });
-const ids = Object.fromEntries(['openHistory','closeHistory','historyDialog','homeInstall','installHelp','closeInstallHelp','refreshPlayers','inviteFriend','inviteFeedback','inviteLink','nameDialog','nameDialogCard','cancelName','currentPlayerName','hallEmpty','botSetup','startBot','botBack','modeTitle','backHome','onlineNotice','game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp','arcadeHandoff','playerNameForm','playerName','savePlayerName','guideModal','guideStep','guideClose','guideBack','guideNext','guideProgress','modeReturn'].map(id => [id, element()]));
+const ids = Object.fromEntries(['gameHelp','openHistory','closeHistory','historyDialog','homeInstall','installHelp','closeInstallHelp','refreshPlayers','inviteFriend','inviteFeedback','inviteLink','nameDialog','nameDialogCard','cancelName','currentPlayerName','hallEmpty','botSetup','startBot','botBack','modeTitle','backHome','onlineNotice','game','turn','player0','player1','botStatusName','rivalName','rivalDetail','skip','mobileSkip','mobileNewGame','mobileUndo','wallConfirmBar','confirmWall','cancelWall','undo','history','sharedHistory','sharedHistoryContent','message','cardResult','cardName','cardText','victory','confetti','winner','victoryStatus','again','victoryModes','startFog','fogMatchup','modePicker','modeLabel','difficultyDescription','localMode','wifiMode','botMode','reset','realmPanel','realmChoices','realmBrowser','realmLobby','realmStatus','networkCount','networkPeople','hallList','createEmptyRealm','realmBrowserBack','lobbyBlueName','lobbyGoldName','lobbyStatus','startRealmGame','leaveRealmLobby','closeRealm','installApp','arcadeHandoff','playerNameForm','playerName','savePlayerName','guideModal','guideStep','guideClose','guideBack','guideNext','guideProgress','modeReturn'].map(id => [id, element()]));
 ids.modeReturn.hidden = true;
 Object.defineProperty(ids.hallList,'innerHTML',{get(){return ''},set(){this.children=[]}});
 const moveButtons = [element({ dataset: { action: 'move' } }), element({ dataset: { action: 'move' } })];
@@ -32,7 +32,7 @@ const groups = {
   '[data-deck-count]': [element(), element(), element(), element()], '[data-actions-label]': [element(), element()],
 };
 const howToTrigger = element();
-const aliases = { '.app': element(), '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element(), '.lobby-players': element(), '.mode-card-nav': element(), '.wifi-help': element(), '.how-to>summary': howToTrigger };
+const aliases = { '.app': element(), '#board': canvas, '#player0 > b': element(), '#player1 > b': element(), '.mobile-seat[data-player="0"]': seats[0], '.mobile-seat[data-player="1"]': seats[1], '.mobile-seat[data-player="0"] .seat-row > b': element(), '.mobile-seat[data-player="1"] .seat-row > b': element(), '.rival-status': element(), '.lobby-players': element(), '.mode-card-nav': element(), '.wifi-help': element(), '.how-to>summary': howToTrigger };
 const document = {
   body: element(), documentElement: element({ requestFullscreen() {} }), fullscreenElement: null,
   querySelector(q) { return q.startsWith('#') ? ids[q.slice(1)] || aliases[q] : aliases[q] || element(); },
@@ -68,11 +68,15 @@ if (ids.guideModal.classList.contains('show')) throw new Error('How to Play Done
 ids.localMode.onclick();
 let state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.gameMode !== 'local' || state.deckRemaining !== 13 || !ids.modePicker.hidden) throw new Error('Local game did not initialize from the mode picker');
+if(ids.wallConfirmBar.parentElement!==seats[0]||ids.mobileSkip.parentElement!==seats[0])throw new Error('Blue decisions are not inside the rotated seat');
+ids.gameHelp.onclick();
+if(!ids.guideModal.classList.contains('show'))throw new Error('In-game help did not open');
+ids.guideClose.onclick();
 const stateBeforeModes = sandbox.window.render_game_to_text();
 let homeConfirmed = false;
 sandbox.confirm = prompt => { if (!prompt.startsWith('Are you sure')) throw new Error('Missing home confirmation'); return homeConfirmed; };
 const beforeHome = sandbox.render_game_to_text();
-ids.backHome.onclick();
+ids.mobileNewGame.onclick();
 if (!ids.modePicker.hidden || sandbox.render_game_to_text() !== beforeHome) throw new Error('Canceling home changed the game');
 homeConfirmed = true;
 ids.backHome.onclick();
@@ -95,6 +99,7 @@ state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.walls.length || !state.wallPreview || ids.wallConfirmBar.hidden) throw new Error('Touch wall preview placed immediately or did not arm');
 ids.confirmWall.onclick();
 state = JSON.parse(sandbox.window.render_game_to_text());
+if(ids.wallConfirmBar.parentElement!==seats[1])throw new Error('Wall decisions did not follow Gold turn');
 if (state.walls.length !== 1 || state.players[0].walls !== 9 || state.turn !== 'Gold Knight') throw new Error('Touch wall confirmation failed');
 ids.mobileUndo.onclick();
 state = JSON.parse(sandbox.window.render_game_to_text());
@@ -365,6 +370,22 @@ canvas.onpointerdown({ clientX: 324, clientY: 540, pointerType: 'mouse' });
 state = JSON.parse(sandbox.window.render_game_to_text());
 if (state.players[1].position.y !== 7) throw new Error('Gold local-bottom perspective did not map board input correctly');
 
+ids.localMode.onclick();
+const localState=sandbox.__botTest.getState();
+localState.deck=['walls'];
+sandbox.__botTest.drawCard();
+if(ids.cardResult.style['--card-rotation']!=='180deg'||localState.turn!==1)throw new Error('Blue card did not retain drawing-player orientation');
+localState.deck=['break'];
+sandbox.__botTest.drawCard();
+if(ids.cardResult.style['--card-rotation']!=='0deg'||!localState.pendingBreak||ids.mobileSkip.parentElement!==seats[1])throw new Error('Gold break controls/card orientation failed');
+ids.mobileSkip.onclick();
+if(localState.pendingBreak)throw new Error('Skip did not resolve wall break');
+if(ids.cardResult.classList.contains('show'))throw new Error('Resolved wall-break card is still visible');
+if(ids.message.textContent!=='Gold Knight skipped Break the Wall.')throw new Error('Skip left the wall-break instruction visible');
+localState.walls=[{x:2,y:2,dir:'h',owner:1}];localState.deck=['break'];
+sandbox.__botTest.drawCard();
+canvas.onpointerdown({clientX:216,clientY:216,pointerType:'touch'});
+if(localState.pendingBreak||localState.walls.length||ids.message.textContent!=='Blue Knight broke a wall.')throw new Error('Breaking a wall left a stale instruction or unresolved action');
 console.log('Smoke test passed: name/discovery/challenge, turn alert, both Wi-Fi perspectives, gameplay, bot response, and synchronization');
 
 (async()=>{

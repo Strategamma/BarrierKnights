@@ -65,3 +65,15 @@ TODO:
 - Modes now remembers whether it was opened from gameplay or victory and shows the matching Back action; initial setup shows none.
 - Opening Modes no longer destroys state or disconnects Wi-Fi. Returning restores the exact game/victory surface and resumes bot scheduling when relevant; teardown happens only after choosing a replacement mode.
 - Wi-Fi regression coverage confirms the active socket survives open/return. Local state and victory restoration are also covered. PWA cache is v37.
+
+
+2026-10-26: Play Online replaces IP-scoped Wi-Fi discovery. Automatic guest registration/presence, private guest tokens, server-owned 60-second challenges, acceptance/cancel/decline, atomic seating, heartbeat cleanup, and 4/3/2-column cards implemented. Quick Match deferred. Eight gateway tests and client smoke pass; in-app browser verified concurrent invitations, banner, acceptance, reload recovery, desktop/tablet/390px phone layouts (44px controls, no horizontal overflow), no console errors. Standard Playwright runner blocked by missing Chromium executable. Client and gateway require coordinated deployment; memory-only matches do not survive gateway restart.
+
+2026-11-26 UI refresh:
+- Same-screen decisions inherit the active seat; card orientation stays with its drawer, including undo. Shared Back confirmation covers mobile, desktop and mode changes. Added gameplay ? via existing guide; contained Try me within Move.
+- Generated transparent matte 3D knight/barrier wordmark; integrated header, home and handoff; cache v54. Portrait board fits available container space.
+- Smoke regressions cover mobile cancellation, help, seat ownership and card orientation. Browser checks pass 320x568, 390x844, 844x390, 768x1024 and 1280x800; screenshots inspected. No deployment or physical-device verification.
+
+2026-11-26 follow-up:
+- Added transparent separation between emblem/wordmark and centered toolbar artwork with balanced vertical space. Spaced asset has a distinct URL; cache v55.
+- finish() now replaces stale action instructions with the completed action. Smoke regression covers both breaking and skipping; five viewport checks verify logo centering and post-skip feedback.
